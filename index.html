@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<link href="./css/styles.css" rel="stylesheet" type="text/css" />
+
+	<script type="text/javascript" src="./js/vendor/jquery.1.11.0.min.js"></script>
+	<script type="text/javascript" src="./js/format.js"></script>
+	<script type="text/javascript" src="./js/nav.js"></script>
+	<script type="text/javascript" src="./js/tile-data.js"></script>
+	<script type="text/javascript" src="./js/tile-set.js"></script>
+
+
+<script>
+function getImgName(tile) {
+	if (tile == 'slot') {
+		return '/img/tiles/placeholder.png';
+	}
+	return '/img/tiles/tile-' + tile + '.png';
+}
+
+function selectTile(tile) {
+
+}
+
+var MAP = {W: 600, H: 400, TOP: 100, LEFT: 100, NAV: 25, SCROLL: 2, DELAY: 10, TILE: 46, Z_TOP: 0, Z_LEFT: 0, LASSO: 10};
+var timer = null, ts;
+var currTile = 'r34';
+
+$(function(){
+	initMap();
+	initNav();
+	initNavEvents();
+
+	ts = new TileSet();
+	// ts.setData([['', 'slot', ''], ['slot', 't1-r24', 'slot'], ['', 'slot', '']]);
+	ts.initTile();
+	ts.drawMap();
+	/*
+	alert('!');
+	ts.clearMap();
+	ts.clearSlots();
+	ts.drawMap();
+	*/
+	ts.initEvents();
+
+	for(var tile in TILES) {
+		var img = Format.tag('img', {class: 'choose-tile', src: getImgName(tile), alt: '', 'data-name': tile});
+		$('#tiles').append(img);
+	}
+	$('#tiles img[data-name="' + currTile + '"]').addClass('active');
+
+	$('#tiles img').click(function(){
+		$('#tiles img').removeClass('active');
+		$(this).addClass('active');
+		currTile = $(this).data('name');
+	});
+});
+</script>
+</head>
+<body>
+
+<div class="nav nav-up"></div>
+<div class="nav nav-down"></div>
+<div class="nav nav-left"></div>
+<div class="nav nav-right"></div>
+
+<div class="nav nav-up-left"></div>
+<div class="nav nav-up-right"></div>
+<div class="nav nav-down-left"></div>
+<div class="nav nav-down-right"></div>
+
+<div id="area"><div id="map"></div></div>
+
+<div id="tiles"></div>
+</body>
+</html>
