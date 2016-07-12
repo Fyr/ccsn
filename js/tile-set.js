@@ -135,6 +135,38 @@ var TileSet = function(){
 
 	this.setCurrTile = function(tile) {
 		var tileData = TILES[tile];
+	};
 
-	}
+	this.revealSlots = function(){
+		var mapTiles = this.getData();
+		for(var i = 1; i < (mapTiles.length - 1); i++) {
+			for(var j = 1; j < (mapTiles[i].length - 1); j++) {
+				tile = mapTiles[i][j];
+				if (tile && tile != 'slot') {
+					if (!mapTiles[i - 1][j]) {
+						mapTiles[i - 1][j] = 'slot';
+					}
+					if (!mapTiles[i][j + 1]) {
+						mapTiles[i][j + 1] = 'slot';
+					}
+					if (!mapTiles[i + 1][j]) {
+						mapTiles[i + 1][j] = 'slot';
+					}
+					if (!mapTiles[i][j - 1]) {
+						mapTiles[i][j - 1] = 'slot';
+					}
+				}
+
+			}
+		}
+		this.setData(mapTiles);
+	};
+
+	this.getTileData = function(tileName) {
+		return TILES[tile];
+	};
+
+	this.revealAvailableSlots = function(tileName) {
+
+	};
 }
