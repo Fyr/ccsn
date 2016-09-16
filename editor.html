@@ -63,9 +63,10 @@ function terraClass(currTerra) {
 
 function renderTools() {
 	var tools = [TILES.GROUND, TILES.ROAD, TILES.CROSSROAD, TILES.TOWN, TILES.MONASTERY, TILES.Z_POINT];
+	var titles = ['Ground', 'Road', 'Crossroad (Road end-point)', 'Town', 'Monastery', 'Clear'];
 	for(var i = 0; i < tools.length; i++) {
 		var ch = tools[i];
-		$('#tools').append(Format.tag('div', {id: 'terra_' + ch, class: 'terra'}, terra(ch)));
+		$('#tools').append(Format.tag('div', {id: 'terra_' + ch, class: 'terra', title: titles[i]}, terra(ch)));
 	}
 
 	$('#tools div').click(function(){

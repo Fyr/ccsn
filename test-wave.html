@@ -13,7 +13,7 @@
 	<script type="text/javascript">
 $(function(){
 	var time = Date.now();
-	var canvas = new fabric.Canvas('c');
+	var canvas = new fabric.Canvas('c', {renderOnAddRemove: false});
 	// canvas.renderOnAddRemove = false;
 	/*
 	canvas.on('mouse:down', function(options) {

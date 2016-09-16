@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8" />
+	<script type="text/javascript">
+		if(typeof(Worker) !== "undefined") {
+			//alert('WW поддерживается');
+		}
+
+		//массив (пул) потоков
+		workers = new Array();
+
+		//вызывается при нажатии на кнопку запуска потока
+		function startCalc(){
+			//запуск потока
+			workers[workers.length] = new Worker('/js/worker.js');
+
+			//подписка на обработчик, перехватывающий сообщения об ошибках
+			workers[workers.length-1].addEventListener("error", errorHandler, true);
+
+			//подписка на обработчик, перехватывающий сообщения, отправляемые потоком
+			workers[workers.length-1].addEventListener("message", messageHandler, true);
+
+			var dataObj = {id: workers.length-1, data: [1,2,3]};
+			//dataObj.method = function(){ console.log('do!'); };
+			//dataObj.method();
+			//отправка сообщения потоку c аргументами (в данном случае ID потока)
+			workers[workers.length-1].postMessage(dataObj);
+		}
+
+		//вызывается при нажатии на кнопку остановки
+		function stopCalc(){
+			for(i=0;i<workers.length;++i)
+				workers[i].terminate();
+
+			workers  = new Array();
+		}
+
+		//обрабочик сообщений от потока
+		function messageHandler(e){
+			//в консоль
+			// console.log(e.data,e);
+
+			//или на страницу
+			document.getElementById('result').innerHTML +=e.data+'</br>';
+		}
+
+		//обработчик ошибок
+		function errorHandler(e){
+			console.log(e.message,e);
+		}
+
+	</script>
+</head>
+<body>
+<input onclick="startCalc();" value="Вычислить" type="button">
+<input onclick="stopCalc();" value="Остановить вычисления" type="button">
+<div id="result"></div>
+</body>
+</html>

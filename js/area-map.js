@@ -33,5 +33,6 @@ var AreaMap = createClass({
 	},
 	draw: function() {
 		this.iterateTiles(function(tile){ tile.draw(); });
+		this.canvas.renderAll();
 	}
 });
