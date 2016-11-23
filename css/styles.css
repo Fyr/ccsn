@@ -1,5 +1,6 @@
 html, body { cursor: url('../img/cursor/normal.png'), auto; }
 .tile { display: block; border: 0px none; width: 46px; height: 46px; position: absolute; top: 0; left: 0;}
+.lasso { display: block; border: 0px none; position: absolute; top: 0; left: 0;}
 #area { border: 1px solid red; position: fixed; overflow: hidden; }
 #tiles { position: fixed; overflow: hidden; top: 600px; }
 .choose-tile {display: block; float: left; margin-right: 5px; border: 2px solid #fff;}

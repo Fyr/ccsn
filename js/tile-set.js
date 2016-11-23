@@ -2,6 +2,7 @@ var TileSet = function(){
 	var self = this;
 
 	self.data = [['', 'slot', ''], ['slot', 't1-r24', 'slot'], ['', 'slot', '']];
+	self.isLasso = false;
 
 	this.setData = function(data) {
 		self.data = data;
@@ -63,8 +64,18 @@ var TileSet = function(){
 	};
 
 	this.insertTile = function (tile, pos) {
-		var img = Format.tag('img', {class: 'tile', src: getImgName(tile), alt: '', style: 'top: ' + pos.h + 'px; left: ' + pos.w + 'px'});
+		var img = Format.img({class: 'tile', src: getImgName(tile), style: 'top: ' + pos.h + 'px; left: ' + pos.w + 'px'});
 		$('#map').append(img);
+		if (tile == 'slot') {
+			var lasso = Format.img({
+				class: 'lasso',
+				src: '/img/blank.gif',
+				'data-row': pos.row,
+				'data-col': pos.col,
+				style: 'top: ' + (pos.h - MAP.LASSO) + 'px; left: ' + (pos.w - MAP.LASSO) + 'px; width: ' + MAP.LASSO * 2 + 'px; height: ' + MAP.LASSO * 2 + 'px; z-index: 5'
+			});
+			$('#map').append(lasso);
+		}
 	};
 
 	this.drawMap = function () {
@@ -75,7 +86,7 @@ var TileSet = function(){
 			for(var j = 0; j < mapTiles[i].length; j++) {
 				var tile = mapTiles[i][j];
 				if (tile) {
-					self.insertTile(tile, {w: pos.w + MAP.Z_LEFT, h: pos.h + MAP.Z_TOP});
+					self.insertTile(tile, {w: pos.w + MAP.Z_LEFT, h: pos.h + MAP.Z_TOP, row: i, col: j});
 				}
 				pos.w+= MAP.TILE;
 			}
@@ -84,7 +95,20 @@ var TileSet = function(){
 	};
 
 	this.clearMap = function () {
+		$('#map').html('');
+		/*
 		$('#map .tile').remove();
+		$('#map .lasso').remove();
+		*/
+	};
+
+	this.getSlotData = function(lasso) {
+		return {
+			left: parseInt(cssPx(lasso, 'left') + MAP.LASSO),
+			top: parseInt(cssPx(lasso, 'top') + MAP.LASSO),
+			row: $(lasso).data('row'),
+			col: $(lasso).data('col')
+		};
 	};
 
 	this.initEvents = function() {
@@ -92,27 +116,50 @@ var TileSet = function(){
 			// $('#map').css('cursor', 'url(' + getImgName(currTile) + '), auto');
 			$('#map #cursor').attr('src', getImgName(currTile));
 			$('#map #cursor').show();
+			self.isLasso = false;
 			$('#map').bind('mousemove', function(e){
-				console.log(e.pageX - MAP.LEFT, e.pageY - MAP.TOP);
-				var posX = e.pageX - MAP.LEFT - cssPx('#map', 'left'), posY = e.pageY - MAP.TOP - cssPx('#map', 'top');
-				/*
-				var qX = Math.floor(posX / MAP.TILE), qY = Math.floor(posY / MAP.TILE);
-				var dX = posX - qX * MAP.TILE, dY = posY - qY * MAP.TILE;
-				if (dX < MAP.LASSO) {
-					posX = qX * MAP.TILE;
+				if (!self.isLasso) {
+					var posX = e.pageX - MAP.LEFT - cssPx('#map', 'left'), posY = e.pageY - MAP.TOP - cssPx('#map', 'top');
+					cssPx('#map #cursor', 'top', posY);
+					cssPx('#map #cursor', 'left', posX);
 				}
-				if (dY < MAP.LASSO) {
-					posY = qY * MAP.TILE;
-				}
-				*/
-				cssPx('#map #cursor', 'top', posY);
-				cssPx('#map #cursor', 'left', posX);
+			});
+			$('#map .lasso').bind('mouseenter', function(e){
+				e.stopPropagation();
+				self.isLasso = true;
+				var slot = self.getSlotData(e.target);
+				cssPx('#map #cursor', 'top', slot.top);
+				cssPx('#map #cursor', 'left', slot.left);
+			});
+			$('#map .lasso').bind('mouseleave', function(e){
+				e.stopPropagation();
+				self.isLasso = false;
+			});
+			$('#map .lasso').bind('click', function(e){
+				e.stopPropagation();
+				self.isLasso = false;
+				$('#map').mouseleave();
+				var slot = self.getSlotData(e.target);
+				var mapTiles = self.getData();
+				mapTiles[slot.row][slot.col] = currTile;
+				self.setData(mapTiles);
+				self.clearMap();
+				$('#map').append(Format.img({id: 'cursor', class: 'tile', src: getImgName(currTile), style: 'display: none'})); // <img id="cursor" class="tile" src="./img/tiles/tile-t1-r24.png" alt="" />
+				// TODO:
+				// 1. pass turn to another player
+				// 2. extend map for another slots
+				self.drawMap();
+				// 3. re-center map
+				// self.initEvents();
 			});
 		});
 		$('#map').mouseleave(function(){
 			// $('#map').css('cursor', 'url(/img/cursor/normal.png), auto');
 			$('#map #cursor').hide();
 			$('#map').unbind('mousemove');
+			$('#map .lasso').unbind('mouseenter');
+			$('#map .lasso').unbind('mouseleave');
+			$('#map .lasso').unbind('click');
 		});
 		$('#map').contextmenu(function(){
 
