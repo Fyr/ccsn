@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8" />
+	<title>Hello React</title>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.13.3/react.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.13.3/JSXTransformer.js"></script>
+	<script src="https://npmcdn.com/babel-core@5.8.38/browser.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+
+	<script type="text/babel">
+		class Point {
+			constructor(x, y) {
+				this.x = x;
+				this.y = y;
+			}
+			toString() {
+				return `(${this.x}, ${this.y})`;
+			}
+		}
+
+		class ColorPoint extends Point {
+			constructor(x, y, color) {
+				super(x, y);
+				this.color = color;
+			}
+			toString() {
+				return super.toString() + ' in ' + this.color;
+			}
+		}
+		const cp = new ColorPoint(25, 8, 'green');
+
+		console.log(cp.toString());
+		console.log(cp instanceof ColorPoint);
+		console.log(cp instanceof Point);
+
+		let arr = ["hello", 2]; // let
+
+		let [str, times] = arr; // деструктуризация
+
+		console.log(str.repeat(times)); // hellohello, метод repeat
+	</script>
+
+</head>
+<body>
+<div id="example"></div>
+<script type="text/babel">
+	React.render(
+	<h1>Hello, world!</h1>,
+			document.getElementById('example')
+	);
+
+</script>
+</body>
+</html>

@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<!--link href="./css/styles.css" rel="stylesheet" type="text/css" /-->
+
+	<script type="text/javascript" src="./js/vendor/jquery.1.11.0.min.js"></script>
+	<script type="text/javascript" src="./js/format.js"></script>
+	<script type="text/javascript" src="./js/tile-data.js"></script>
+
+<style>
+	#tile span {padding: 0 7px; font-size: 2em; border: 1px solid #eee; cursor: pointer;}
+	#tile .terra-g {background: #168F0F;}
+	#tile .terra-r {background: #ddd;}
+	#tile .terra-c {background: #aaa;}
+	#tile .terra-t {background: #CC9E2B;}
+	#tile .terra-m {background: #C43A21;}
+	#tools .terra {float: left; border: 1px solid #eee; padding: 3px 7px; margin: 0px 10px; text-decoration: none; cursor: pointer;}
+	#tools .terra.active {border: 1px solid #00f;}
+</style>
+<script>
+var currTerra;
+var tile;
+
+function getImgName(tile) {
+	if (tile == 'slot') {
+		return '/img/tiles/placeholder.png';
+	}
+	return '/img/tiles/tile-' + tile + '.png';
+}
+
+function renderTile(tile) {
+	var html = '';
+	for(var i = 0; i < tile.length; i++) {
+		var row = tile[i];
+		for(var j = 0; j < row.length; j++) {
+			var ch = row[j];
+			html+= Format.tag('span', {class: terraClass(ch)}, ch);
+		}
+		html+= '<br>';
+	}
+	$('pre').html(html);
+
+	$('pre span').click(function(){
+		setTerra(this);
+	});
+}
+
+function setTerra(e) {
+	//_class = (currTerra == '&nbsp;') ? '' : 'terra-' + currTerra.toLowerCase();
+	$(e).attr('class', terraClass(currTerra));
+	$(e).html(currTerra);
+}
+
+function terra(ch) {
+	return ch == 'Z' ? '&nbsp;' : ch;
+}
+
+function terraClass(currTerra) {
+	return (currTerra == '&nbsp;') ? 'terra-z' : 'terra-' + currTerra.toLowerCase();
+}
+
+function renderTools() {
+	var tools = [TILES.GROUND, TILES.ROAD, TILES.CROSSROAD, TILES.TOWN, TILES.MONASTERY, TILES.Z_POINT];
+	var titles = ['Ground', 'Road', 'Crossroad (Road end-point)', 'Town', 'Monastery', 'Clear'];
+	for(var i = 0; i < tools.length; i++) {
+		var ch = tools[i];
+		$('#tools').append(Format.tag('div', {id: 'terra_' + ch, class: 'terra', title: titles[i]}, terra(ch)));
+	}
+
+	$('#tools div').click(function(){
+		var id = $(this).prop('id');
+		chooseTool(id.replace(/terra_/, ''));
+	});
+}
+
+function chooseTool(id) {
+	$('.terra').removeClass('active');
+	$('#terra_' + id).addClass('active');
+	currTerra = terra(id);
+	console.log(id, $('#terra_' + id).get(0));
+}
+
+function initTile() {
+	tile = [];
+	for(var i = 0; i < 7; i++) {
+		if (i == 0 || i == 6) {
+			tile[i] = [terra(TILES.Z_POINT)];
+		} else {
+			tile[i] = [terra(TILES.GROUND)];
+		}
+		for(var j = 1; j < 6; j++) {
+			tile[i].push(terra(TILES.GROUND));
+		}
+
+		if (i == 0  || i == 6) {
+			tile[i].push(terra(TILES.Z_POINT));
+		} else {
+			tile[i].push(terra(TILES.GROUND));
+		}
+
+	}
+	return tile;
+}
+
+function tileSerialize() {
+	var str = '';
+	i = 0;
+	$('#tile span').each(function(){
+		str+= terraClass($(this).html()).replace(/terra-/, '').toUpperCase();
+		i++;
+		if (i >=7) {
+			str+= '\n';
+			i = 0;
+		}
+	});
+	return str;
+}
+
+function tileResource() {
+	var reader = new FileReader();
+	reader.onload = function(event) {
+		var dataUri = event.target.result,
+				img     = document.createElement("img");
+
+		img.src = dataUri;
+		document.body.appendChild(img);
+	};
+
+	reader.onerror = function(event) {
+		console.error("Файл не может быть прочитан! код " + event.target.error.code);
+	};
+
+	reader.readAsDataURL(file);
+}
+
+$(function(){
+	tile = initTile();
+	renderTools();
+	renderTile(tile);
+	currTerra = TILES.ROAD;
+	chooseTool(currTerra);
+});
+</script>
+</head>
+<body>
+
+<pre id="tile">
+
+</pre>
+<div id="tools"></div>
+<button type="button" onclick="$('textarea').html(tileSerialize())">Serialize</button>
+<button type="button" onclick="$('textarea').html(tileSerialize())">Save</button> <input type="text" id="tileFile"> <br/>
+<textarea style="width: 100%; height: 300px;"></textarea>
+</body>
+</html>

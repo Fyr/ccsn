@@ -1,22 +1,60 @@
 var TileSet = function(){
 	var self = this;
 
-	self.data = [];
+	self.data = [['', 'slot', ''], ['slot', 't1-r24', 'slot'], ['', 'slot', '']];
 
 	this.setData = function(data) {
 		self.data = data;
 	};
-
+	
 	this.getData = function() {
 		return self.data;
 	};
 
-	this.extendData = function(w, h) {
-		// if (h) {}
+	this.extendData = function() {
+		var mapTiles = self.getData();
+		var row = mapTiles.length - 1;
+		var emptyRow = [];
+		for(var col = 0; col < mapTiles[row].length; col++) {
+			emptyRow.push('');
+		}
+		if (self._checkRowExtandable(row)) { // check bottom row
+			mapTiles.push(emptyRow);
+		} else if (self._checkRowExtandable(0)) { // check top row
+			mapTiles.unshift(emptyRow);
+		} else if (self._checkColExtandable(0)) { // check left col
+			for(var row = 0; row < mapTiles.length; row++) {
+				mapTiles[row].unshift('');
+			}
+		} else if (self._checkColExtandable(mapTiles[0].length - 1)) { // check right col
+			for(var row = 0; row < mapTiles.length; row++) {
+				mapTiles[row].push('');
+			}
+		}
+	};
+
+	this._checkRowExtandable = function(row) {
+		var mapTiles = self.getData();
+		for(var col = 0; col < mapTiles[row].length; col++) {
+			if (mapTiles[row][col]) {
+				return true;
+			}
+		}
+		return false;
+	};
+
+	this._checkColExtandable = function(col) {
+		var mapTiles = self.getData();
+		for(var row = 0; row < mapTiles.length; row++) {
+			if (mapTiles[row][col]) {
+				return true;
+			}
+		}
+		return false;
 	};
 
 	this.initTile = function () {
-		var mapTiles = this.getData();
+		var mapTiles = self.getData();
 		var tiles = {h: mapTiles.length, w: mapTiles[0].length};
 		var pos = {w: Math.round((MAP.W - MAP.TILE * tiles.w) / 2), h: Math.round((MAP.H - MAP.TILE * tiles.h) / 2)};
 		MAP.Z_LEFT = pos.w;
@@ -30,14 +68,14 @@ var TileSet = function(){
 	};
 
 	this.drawMap = function () {
-		var mapTiles = this.getData();
+		var mapTiles = self.getData();
 		var pos = {w: 0, h: 0};
 		for(var i = 0; i < mapTiles.length; i++) {
 			pos.w = 0;
 			for(var j = 0; j < mapTiles[i].length; j++) {
 				var tile = mapTiles[i][j];
 				if (tile) {
-					this.insertTile(tile, {w: pos.w + MAP.Z_LEFT, h: pos.h + MAP.Z_TOP});
+					self.insertTile(tile, {w: pos.w + MAP.Z_LEFT, h: pos.h + MAP.Z_TOP});
 				}
 				pos.w+= MAP.TILE;
 			}
@@ -51,13 +89,29 @@ var TileSet = function(){
 
 	this.initEvents = function() {
 		$('#map').mouseenter(function(){
-			$('#map').css('cursor', 'url(' + getImgName(currTile) + '), auto');
+			// $('#map').css('cursor', 'url(' + getImgName(currTile) + '), auto');
+			$('#map #cursor').attr('src', getImgName(currTile));
+			$('#map #cursor').show();
 			$('#map').bind('mousemove', function(e){
 				console.log(e.pageX - MAP.LEFT, e.pageY - MAP.TOP);
+				var posX = e.pageX - MAP.LEFT - cssPx('#map', 'left'), posY = e.pageY - MAP.TOP - cssPx('#map', 'top');
+				/*
+				var qX = Math.floor(posX / MAP.TILE), qY = Math.floor(posY / MAP.TILE);
+				var dX = posX - qX * MAP.TILE, dY = posY - qY * MAP.TILE;
+				if (dX < MAP.LASSO) {
+					posX = qX * MAP.TILE;
+				}
+				if (dY < MAP.LASSO) {
+					posY = qY * MAP.TILE;
+				}
+				*/
+				cssPx('#map #cursor', 'top', posY);
+				cssPx('#map #cursor', 'left', posX);
 			});
 		});
 		$('#map').mouseleave(function(){
-			$('#map').css('cursor', 'url(/img/cursor/normal.png), auto');
+			// $('#map').css('cursor', 'url(/img/cursor/normal.png), auto');
+			$('#map #cursor').hide();
 			$('#map').unbind('mousemove');
 		});
 		$('#map').contextmenu(function(){
@@ -81,6 +135,38 @@ var TileSet = function(){
 
 	this.setCurrTile = function(tile) {
 		var tileData = TILES[tile];
+	};
+
+	this.revealSlots = function(){
+		var mapTiles = this.getData();
+		for(var i = 1; i < (mapTiles.length - 1); i++) {
+			for(var j = 1; j < (mapTiles[i].length - 1); j++) {
+				tile = mapTiles[i][j];
+				if (tile && tile != 'slot') {
+					if (!mapTiles[i - 1][j]) {
+						mapTiles[i - 1][j] = 'slot';
+					}
+					if (!mapTiles[i][j + 1]) {
+						mapTiles[i][j + 1] = 'slot';
+					}
+					if (!mapTiles[i + 1][j]) {
+						mapTiles[i + 1][j] = 'slot';
+					}
+					if (!mapTiles[i][j - 1]) {
+						mapTiles[i][j - 1] = 'slot';
+					}
+				}
+
+			}
+		}
+		this.setData(mapTiles);
+	};
+
+	this.getTileData = function(tileName) {
+		return TILES[tile];
+	};
+
+	this.revealAvailableSlots = function(tileName) {
 
 	};
 }

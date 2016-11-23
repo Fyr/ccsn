@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8" />
+	<title>Hello React</title>
+	<script type="text/javascript" src="/js/vendor/class.js"></script>
+	<script type="text/javascript">
+		var Animal = createClass({
+			abstracts: ['say'],
+			construct: function(name) {
+				this.name = name;
+			},
+			eat: function() {
+				return 'ou yeah...';
+			}
+		});
+
+		var Kitty = createClass({
+			extend: Animal,
+			say: function() {
+				return this.name + ' said: RrrrRRR...Mau..';
+			},
+			eat: function() {
+				return Animal.fn.eat.call(this) + 'FISH!!'
+			}
+		});
+
+		var Doggy = createClass({
+			extend: Animal,
+			construct: function(name) {
+				Animal.call(this, name);
+				console.log('doggy have been created');
+			},
+			say: function() {
+				return this.name + ' said: GAV!';
+			},
+			eat: function() {
+				return Animal.fn.eat.call(this) + 'MEAT!!'
+			}
+		});
+
+		var sharik = new Doggy('sharik'); // doggy have been created
+		var murka = new Kitty('murka');
+
+		console.log( sharik.eat(), sharik.say()); // ou yeah...MEAT!! sharik said: GAV!
+		console.log( murka.eat(), murka.say());
+	</script>
+</head>
+<body>
+
+</body>
+</html>

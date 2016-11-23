@@ -102,7 +102,7 @@ QUnit.test("TileSet tests", function (assert) {
 	assert.deepEqual(ts.getData(), expected, 'Reveal slots - 2 tiles only');
 
 	data = [
-		['',     '',     '',       '',    '',    '']
+		['',     '',     '',       '',    '',    ''],
 		['',     '',     'r13',    'r13', '',    ''],
 		['',     'r13',  'r13',    'r13', '',    ''],
 		['',     '',     'r13',    'r13', 'r13', ''],
@@ -114,7 +114,7 @@ QUnit.test("TileSet tests", function (assert) {
 	ts.setData(data);
 	ts.revealSlots();
 	expected = [
-		['',     '',     'slot',   'slot','',     '']
+		['',     '',     'slot',   'slot','',     ''],
 		['',     'slot', 'r13',    'r13', 'slot', ''],
 		['slot', 'r13',  'r13',    'r13', 'slot', ''],
 		['',     'slot', 'r13',    'r13', 'r13',  'slot'],
@@ -139,18 +139,17 @@ QUnit.test("TileSet tests", function (assert) {
 	ts.setData(data);
 	ts.revealSlots();
 	expected = [
-		['',     '',     '',       '',    '',    '',     '',     '',      '',     '',    ''],
-		['',     '',     'r13',    'r13', '',    '',     '',     'r13',   'r13',  'r13', ''],
-		['',     'r13',  'r13',    'r13', 'r13', 'r13',  'r13',  'r13',   'r13',  '',    ''],
-		['',     '',     'r13',    'r13', '',    '',     'r13',  'r13',   'r13',  'r13', ''],
-		['',     '',     '',       'r13', '',    '',     '',     'r13',   'r13',  'r13', ''],
-		['',     '',     '',       'r13', 'r13', '',     '',     '',      'r13',  '',    ''],
-		['',     'r13',  '',       'r13', 'r13', '',     '',     '',      '',     '',    ''],
-		['',     'r13',  'r13',    'r13', '',    '',     '',     '',      '',     '',    ''],
-		['',     '',     '',       '',    '',    '',     '',     '',      '',     '',    '']
+		['',     '',     'slot',   'slot', '',    '',     '',     'slot',  'slot', 'slot',''],
+		['',     'slot', 'r13',    'r13', 'slot', 'slot', 'slot', 'r13',   'r13',  'r13', 'slot'],
+		['slot', 'r13',  'r13',    'r13', 'r13',  'r13',  'r13',  'r13',   'r13',  'slot',''],
+		['',     'slot', 'r13',    'r13', 'slot', 'slot', 'r13',  'r13',   'r13',  'r13', 'slot'],
+		['',     '',     'slot',   'r13', 'slot', '',     'slot', 'r13',   'r13',  'r13', 'slot'],
+		['',     'slot', 'slot',   'r13', 'r13',  'slot', '',     'slot',  'r13',  'slot',''],
+		['slot', 'r13',  'slot',   'r13', 'r13',  'slot', '',     '',      'slot', '',    ''],
+		['slot', 'r13',  'r13',    'r13', 'slot', '',     '',     '',      '',     '',    ''],
+		['',     'slot', 'slot',   'slot','',     '',     '',     '',      '',     '',    '']
 	];
 	assert.deepEqual(ts.getData(), expected, 'Reveal slots - slot coverage & neck');
-
 
 	data = [
 		['',     '',     '',       '',    '',    '',     '',     '',      '',     '',    ''],
@@ -166,6 +165,32 @@ QUnit.test("TileSet tests", function (assert) {
 	ts.setData(data);
 	ts.revealSlots();
 	expected = [
+		['',      '',     'slot',   'slot','',      '',     '',     'slot',  'slot', 'slot', ''],
+		['',      'slot', 'r13',    'r13', 'slot',  'slot', 'slot', 'r13',   'r13',  'r13', 'slot'],
+		['slot',  'r13',  'r13',    'r13', 'r13',   'r13',  'r13',  'r13',   'r13',  'slot',''],
+		['slot',  'r13',  'r13',    'r13', 'slot',  'slot', 'r13',  'r13',   'slot', 'r13', 'slot'],
+		['slot',  'r13',  'slot',   'r13', 'slot',  'slot', 'r13',  'r13',   'r13',  'r13', 'slot'],
+		['slot',  'r13',  'slot',   'r13', 'slot',  'slot', 'r13',  'slot',  'r13',  'slot',''],
+		['slot',  'r13',  'slot',   'r13', 'r13',   'r13',  'r13',  'slot',  'slot', '',    ''],
+		['slot',  'r13',  'r13',    'r13', 'slot',  'slot', 'slot', '',      '',     '',    ''],
+		['',      'slot', 'slot',   'slot','',      '',     '',     '',      '',     '',    '']
+	];
+	assert.deepEqual(ts.getData(), expected, 'Reveal slots - slot coverage & ring');
+
+	data = [
+		['',      '',     'slot',   'slot','',      '',     '',     'slot',  'slot', 'slot', ''],
+		['',      'slot', 'r13',    'r13', 'slot',  'slot', 'slot', 'r13',   'r13',  'r13', 'slot'],
+		['slot',  'r13',  'r13',    'r13', 'r13',   'r13',  'r13',  'r13',   'r13',  'slot',''],
+		['slot',  'r13',  'r13',    'r13', 'slot',  'slot', 'r13',  'r13',   'slot', 'r13', 'slot'],
+		['slot',  'r13',  'slot',   'r13', 'slot',  'slot', 'r13',  'r13',   'r13',  'r13', 'slot'],
+		['slot',  'r13',  'slot',   'r13', 'slot',  'slot', 'r13',  'slot',  'r13',  'slot',''],
+		['slot',  'r13',  'slot',   'r13', 'r13',   'r13',  'r13',  'slot',  'slot', '',    ''],
+		['slot',  'r13',  'r13',    'r13', 'slot',  'slot', 'slot', '',      '',     '',    ''],
+		['',      'slot', 'slot',   'slot','',      '',     '',     '',      '',     '',    '']
+	];
+	ts.setData(data);
+	ts.clearSlots();
+	expected = [
 		['',     '',     '',       '',    '',    '',     '',     '',      '',     '',    ''],
 		['',     '',     'r13',    'r13', '',    '',     '',     'r13',   'r13',  'r13', ''],
 		['',     'r13',  'r13',    'r13', 'r13', 'r13',  'r13',  'r13',   'r13',  '',    ''],
@@ -176,5 +201,47 @@ QUnit.test("TileSet tests", function (assert) {
 		['',     'r13',  'r13',    'r13', '',    '',     '',     '',      '',     '',    ''],
 		['',     '',     '',       '',    '',    '',     '',     '',      '',     '',    '']
 	];
-	assert.deepEqual(ts.getData(), expected, 'Reveal slots - slot coverage & ring');
+	assert.deepEqual(ts.getData(), expected, 'Clear slots');
+
+
+/*
+	TODO: продумать тесты для выявления курсоров
+	1. Тест на продолжение дороги (дорога/дорога)
+	2. Тест на соединение земель (земля/земля)
+	3. Тест на соседние тайлы (с запретом на курсор)
+	4. Тест на позицию между тайлами
+
+	data = [
+		['',       'slot',   '',       ''],
+		['slot',   'r13',    'slot',   ''],
+		['slot',   'r13',    'r13',    'slot'],
+		['',       'slot',   'slot',   '']
+	];
+	expected = [
+		['',       'cursor', '',       ''],
+		['cursor', 'r13',    'cursor', ''],
+		['cursor', 'r13',    'r13',    'cursor'],
+		['',       'cursor', 'cursor', '']
+	];
+	ts.setData();
+	ts.revealAvailableSlots('r13');
+	assert.deepEqual(ts.getData(), expected, 'Check available slots - road 13 - multiple road/road ground/ground');
+
+	data = [
+		['',       'slot',   '',       ''],
+		['slot',   'r13',    'slot',   ''],
+		['slot',   'slot',   'slot',   ''],
+		['slot',   'r13',    '',   'r1234'],
+		['',       'slot',   'slot',   '']
+	];
+	expected = [
+		['',       'cursor', '',       ''],
+		['cursor', 'r13',    'cursor', ''],
+		['cursor', 'r13',    'r13',    'cursor'],
+		['',       'cursor', 'cursor', '']
+	];
+	ts.setData();
+	ts.revealAvailableSlots('r13');
+	assert.deepEqual(ts.getData(), expected, 'Check available slots - road 13 - multiple road/road ground/ground town/slot');
+	*/
 });
