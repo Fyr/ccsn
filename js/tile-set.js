@@ -113,11 +113,12 @@ var TileSet = function(){
 
 	this.initEvents = function() {
 		$('#map').mouseenter(function(){
-			// $('#map').css('cursor', 'url(' + getImgName(currTile) + '), auto');
+			console.log('map.mouseenter');
+			$('#map').css('cursor', 'none');
 			$('#map #cursor').attr('src', getImgName(currTile));
-			$('#map #cursor').show();
 			self.isLasso = false;
 			$('#map').bind('mousemove', function(e){
+				$('#map #cursor').show();
 				if (!self.isLasso) {
 					var posX = e.pageX - MAP.LEFT - cssPx('#map', 'left'), posY = e.pageY - MAP.TOP - cssPx('#map', 'top');
 					cssPx('#map #cursor', 'top', posY);
@@ -155,6 +156,7 @@ var TileSet = function(){
 		});
 		$('#map').mouseleave(function(){
 			// $('#map').css('cursor', 'url(/img/cursor/normal.png), auto');
+			console.log('map.mouseleave');
 			$('#map #cursor').hide();
 			$('#map').unbind('mousemove');
 			$('#map .lasso').unbind('mouseenter');

@@ -31,13 +31,14 @@ function createClass(data)
 
 
 	// borrow methods from parent classes
+	constructor.parent = {};
 	for(var i=0; i<extend.length; i++) {
 		var parent = extend[i];
 
 		// static constructor
-		if( typeof parent.construct == "function")
+		if( typeof parent.construct == "function") {
 			parent.construct.call(constructor);
-
+		}
 		// copy static methods
 		for(var p in parent) {
 			if (typeof parent[p] != "function" || p == "construct") // copy only functions
@@ -47,9 +48,12 @@ function createClass(data)
 
 		// Copy prototype methods
 		for(var p in parent.prototype) {
-			if (typeof parent.prototype[p] != "function" || p == "constructor")
-				continue;
+			/*
+			 if (typeof parent.prototype[p] != "function" || p == "constructor")
+			 continue;
+			 */
 			proto[p] = parent.prototype[p];
+			constructor.parent[p] = parent.prototype[p];
 		}
 	}
 
@@ -91,8 +95,10 @@ function createClass(data)
 
 	// rest of data are prototype methods
 	for(var p in data) {
-		if (typeof data[p] != "function") // copy only functions
-			continue;
+		/*
+		 if (typeof data[p] != "function") // copy only functions
+		 continue;
+		 */
 		proto[p] = data[p];
 	}
 
@@ -108,9 +114,9 @@ function createClass(data)
 	if( typeof statics.construct == "function")
 		statics.construct.call(constructor);
 
-//	proto.constructor = constructor;
 	constructor.prototype = proto;
 	constructor.fn = proto; // short case
+	constructor.prototype.parent = constructor.parent
 
 	// Finally, return the constructor function
 	return constructor;

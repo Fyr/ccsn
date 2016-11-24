@@ -25,7 +25,7 @@ var T = 3;
 var W = 4;
 
 var TILES = {
-	GROUND: 'G', ROAD: 'R', CROSSROAD: 'C', TOWN: 'T', MONASTERY: 'M', Z_POINT: 'Z',
+	// GROUND: 'G', ROAD: 'R', CROSSROAD: 'C', TOWN: 'T', MONASTERY: 'M', Z_POINT: 'Z',
 	't1-r24': { // начальный тайл
 		route: [
 			[0, 4, 4, 4, 0],

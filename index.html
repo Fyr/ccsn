@@ -6,11 +6,12 @@
 	<link href="./css/styles.css" rel="stylesheet" type="text/css" />
 
 	<script type="text/javascript" src="./js/vendor/jquery.1.11.0.min.js"></script>
+	<script type="text/javascript" src="./js/vendor/class.js"></script>
 	<script type="text/javascript" src="./js/format.js"></script>
 	<script type="text/javascript" src="./js/nav.js"></script>
 	<script type="text/javascript" src="./js/tile-data.js"></script>
 	<script type="text/javascript" src="./js/tile-set.js"></script>
-
+	<script type="text/javascript" src="./js/tile-map.js"></script>
 
 <script>
 function getImgName(tile) {
@@ -33,17 +34,25 @@ $(function(){
 	initNav();
 	initNavEvents();
 
+	/*
 	ts = new TileSet();
 	ts.setData([['', 'slot', ''], ['slot', 't1-r24', 'slot'], ['', 'slot', '']]);
 	ts.initTile();
 	ts.drawMap();
+	*/
+
+	tm = new TileMap([['', 'slot', ''], ['slot', 't1-r24', 'slot'], ['', 'slot', '']]);
+	// tm.setData([['', 'slot', ''], ['slot', 't1-r24', 'slot'], ['', 'slot', '']]);
+	tm.init();
+	tm.drawMap();
+	tm.initEvents();
 	/*
 	alert('!');
 	ts.clearMap();
 	ts.clearSlots();
 	ts.drawMap();
 	*/
-	ts.initEvents();
+	// ts.initEvents();
 
 	for(var tile in TILES) {
 		var img = Format.tag('img', {class: 'choose-tile', src: getImgName(tile), alt: '', 'data-name': tile});

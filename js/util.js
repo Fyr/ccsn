@@ -26,3 +26,14 @@ function number_format(number, decimals, dec_point, thousands_sep) {
 
 	return km + kw + kd;
 }
+
+function extend(self, fnObj) {
+	fnObj.call(self);
+
+	self.parent = {};
+	for(var prop in self) {
+		if (typeof(self[prop]) == 'function') {
+			self.parent[prop] = self[prop];
+		}
+	}
+}
