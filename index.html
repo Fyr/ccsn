@@ -41,7 +41,14 @@ $(function(){
 	ts.drawMap();
 	*/
 
-	tm = new TileMap([['', 'slot', ''], ['slot', 't1-r24', 'slot'], ['', 'slot', '']]);
+	var tileSet = [['', 'slot', ''], ['slot', 't1-r24', 'slot'], ['', 'slot', '']];
+	var expected = [
+		['',    'slot',       '',     '',     ''],
+		['slot', 'r34',   'slot',     '',     ''],
+		['',     'r34',  't1-r24', 'r34', 'slot'],
+		['',    'slot',   'slot', 'slot',     '']
+	];
+	tm = new TileMap(expected);
 	// tm.setData([['', 'slot', ''], ['slot', 't1-r24', 'slot'], ['', 'slot', '']]);
 	tm.init();
 	tm.drawMap();

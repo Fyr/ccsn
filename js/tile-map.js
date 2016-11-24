@@ -37,7 +37,7 @@ var TileMap = createClass({
 				var tile = this.mapTiles[i][j];
 				if (tile) {
 					// this.insertTile(tile, {w: MAP.Z_LEFT + pos.w, h: MAP.Z_TOP + pos.h, row: i, col: j});
-					this.insertTile(tile, {w: MAP.Z_LEFT + pos.w, h: MAP.Z_TOP + pos.h, row: i, col: j});
+					this.insertTile(tile, {w: MAP.Z_LEFT + j * MAP.TILE, h: MAP.Z_TOP + i * MAP.TILE, row: i, col: j});
 				}
 				pos.w+= MAP.TILE;
 			}
