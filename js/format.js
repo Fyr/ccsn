@@ -27,5 +27,12 @@ Format = {
 			value = value / 1024;
 		}
 		return value;
+	},
+	style: function(props){
+		var style = '';
+		for(var p in props) {
+			style+= p + ': ' + props[p] + '; ';
+		}
+		return style;
 	}
 }

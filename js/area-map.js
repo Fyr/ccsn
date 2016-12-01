@@ -1,3 +1,10 @@
+// var MAP = {W: 600, H: 400, TOP: 100, LEFT: 100, NAV: 25, SCROLL: 2, DELAY: 10, TILE: 46, Z_TOP: 0, Z_LEFT: 0, LASSO: 10};
+var AreaMap = createClass({
+	static: {
+		W: 600, H: 400, TOP: 100, LEFT: 100, NAV: 25, SCROLL: 2, DELAY: 10, TILE: 46, LASSO: 10
+	}
+});
+/*
 var AreaMap = createClass({
 	construct: function(cols, rows, canvas) {
 		this.rows = rows;
@@ -36,3 +43,4 @@ var AreaMap = createClass({
 		this.canvas.renderAll();
 	}
 });
+*/

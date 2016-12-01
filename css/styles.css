@@ -7,6 +7,7 @@ html, body { cursor: url('../img/cursor/normal.png'), auto; }
 .choose-tile.active { border: 2px solid blue; }
 #map { background: url('../img/tiles/bkg.png'); border: 1px solid blue; position: relative; top: 0px; left: 0px; width: 768px; height: 443px;}
 #map #cursor {display: none; z-index: 1; }
+#map #subcursor {display: none; z-index: 1; width: auto !important; height: auto !important;}
 .nav { border: 1px solid red; position: fixed; top: 75px; left: 75px; width: 25px; height: 25px; }
 .nav-up { cursor: url('../img/cursor/up.png'), n-resize; }
 .nav-up-right { cursor: url('../img/cursor/up-right.png'), ne-resize; }
@@ -16,3 +17,6 @@ html, body { cursor: url('../img/cursor/normal.png'), auto; }
 .nav-down-left { cursor: url('../img/cursor/down-left.png'), sw-resize; }
 .nav-left { cursor: url('../img/cursor/left.png'), w-resize; }
 .nav-up-left { cursor: url('../img/cursor/up-left.png'), nw-resize; }
+.rotate1 { transform: rotate(90deg); }
+.rotate2 { transform: rotate(180deg); }
+.rotate3 { transform: rotate(270deg); }

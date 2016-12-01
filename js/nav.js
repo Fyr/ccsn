@@ -11,11 +11,6 @@ function initMap() {
 	cssPx('#area', 'left', MAP.LEFT);
 	cssPx('#area', 'width', MAP.W);
 	cssPx('#area', 'height', MAP.H);
-
-	cssPx('#map', 'width', MAP.W + 200);
-	cssPx('#map', 'height', MAP.H + 100);
-
-	$('#map').append('<img id="cursor" class="tile" src="./img/tiles/tile-t1-r24.png" alt="" />');
 }
 
 function initNav() {

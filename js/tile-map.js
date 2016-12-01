@@ -1,21 +1,33 @@
 var TileMap = createClass({
-	construct: function(tiles){
+	construct: function(eMap, areaMap, tiles, activeTile){
 		this.isLasso = false;
-		this.mapTiles = tiles;
-		this.map = '#map';
+		this.tiles = tiles;
+		this.areaMap = areaMap;
+		this.map = {e: eMap, left: 0, top: 0};
+		this.activeTile = activeTile;
+		this.rotate = 0;
 	},
 
 	init: function () {
-		var tiles = {rows: this.mapTiles.length, cols: this.mapTiles[0].length};
-		// var pos = {w: Math.round((MAP.W - MAP.TILE * tiles.cols) / 2), h: Math.round((MAP.H - MAP.TILE * tiles.rows) / 2)};
-		MAP.Z_LEFT = Math.round((MAP.W - MAP.TILE * tiles.cols) / 2);
-		MAP.Z_TOP = Math.round((MAP.H - MAP.TILE * tiles.rows) / 2);
+		var tiles = {rows: this.tiles.length, cols: this.tiles[0].length};
+
+		cssPx(this.map.e, 'width', this.areaMap.W + 200); // пока сделал специально больше чем area - test на скроллинг карты внутри Area
+		cssPx(this.map.e, 'height', this.areaMap.H + 100);
+
+		this.map.left = Math.round((this.areaMap.W - this.areaMap.TILE * tiles.cols) / 2);
+		this.map.top = Math.round((this.areaMap.H - this.areaMap.TILE * tiles.rows) / 2);
+
 		// insertTile('t1-r24', pos);
 	},
 
-	insertTile: function (tile, pos) {
+	addCursor: function() {
+		$(this.map.e).append(Format.img({src: getImgName(this.activeTile), id: 'cursor', class: 'tile'}));
+		// $(this.map.e).append(Format.img({src: '/img/cursor/mouse.png', id: 'subcursor', class: 'tile'}));
+	},
+
+	drawTile: function (tile, pos) {
 		var img = Format.img({class: 'tile', src: getImgName(tile), style: 'top: ' + pos.h + 'px; left: ' + pos.w + 'px'});
-		$map = $(this.map);
+		$map = $(this.map.e);
 		$map.append(img);
 		if (tile == 'slot') {
 			var lasso = Format.img({
@@ -23,25 +35,21 @@ var TileMap = createClass({
 				src: '/img/blank.gif',
 				'data-row': pos.row,
 				'data-col': pos.col,
-				style: 'top: ' + (pos.h - MAP.LASSO) + 'px; left: ' + (pos.w - MAP.LASSO) + 'px; width: ' + MAP.LASSO * 2 + 'px; height: ' + MAP.LASSO * 2 + 'px; z-index: 5'
+				style: 'top: ' + (pos.h - this.areaMap.LASSO) + 'px; left: ' + (pos.w - this.areaMap.LASSO) + 'px; width: ' + this.areaMap.LASSO * 2 + 'px; height: ' + this.areaMap.LASSO * 2 + 'px; z-index: 5'
 			});
 			$map.append(lasso);
 		}
 	},
 
 	drawMap: function () {
-		var pos = {w: 0, h: 0};
-		for(var i = 0; i < this.mapTiles.length; i++) {
-			pos.w = 0;
-			for(var j = 0; j < this.mapTiles[i].length; j++) {
-				var tile = this.mapTiles[i][j];
+		for(var i = 0; i < this.tiles.length; i++) {
+			for(var j = 0; j < this.tiles[i].length; j++) {
+				var tile = this.tiles[i][j];
 				if (tile) {
-					// this.insertTile(tile, {w: MAP.Z_LEFT + pos.w, h: MAP.Z_TOP + pos.h, row: i, col: j});
-					this.insertTile(tile, {w: MAP.Z_LEFT + j * MAP.TILE, h: MAP.Z_TOP + i * MAP.TILE, row: i, col: j});
+					// this.insertTile(tile, {w: this.map.left + pos.w, h: this.map.top + pos.h, row: i, col: j});
+					this.drawTile(tile, {w: this.map.left + j * this.areaMap.TILE, h: this.map.top + i * this.areaMap.TILE, row: i, col: j});
 				}
-				pos.w+= MAP.TILE;
 			}
-			pos.h+= MAP.TILE;
 		}
 	},
 
@@ -55,64 +63,75 @@ var TileMap = createClass({
 
 	getSlotData: function(lasso) {
 		return {
-			left: parseInt(cssPx(lasso, 'left') + MAP.LASSO),
-			top: parseInt(cssPx(lasso, 'top') + MAP.LASSO),
+			left: parseInt(cssPx(lasso, 'left') + this.areaMap.LASSO),
+			top: parseInt(cssPx(lasso, 'top') + this.areaMap.LASSO),
 			row: $(lasso).data('row'),
 			col: $(lasso).data('col')
 		};
 	},
 
+	$context: function() {
+		return {map: $(this.map.e), cursor: $('#cursor', this.map.e), lasso: $('.lasso', this.map.e), subcursor: $('#subcursor', this.map.e)};
+	},
+
+	show: function() {
+		this.init();
+		this.drawMap();
+		this.addCursor();
+		this.initEvents();
+	},
+
 	initEvents: function() {
 		var self = this;
-		var $map = $(this.map);
+		var $map = this.$context().map;
 		$map.mouseenter(function(){
-			var $cursor = $('#cursor', $map);
-			var $lasso = $('.lasso', $map);
-
+			var $e = self.$context();
 			console.log('map.mouseenter');
-			$map.css('cursor', 'none');
-			$cursor.attr('src', getImgName(currTile));
+			$e.map.css('cursor', 'none');
+			$e.cursor.attr('src', getImgName(currTile));
 			self.isLasso = false;
-			$map.bind('mousemove', function(e){
-				$cursor.show();
+			$e.map.bind('mousemove', function(e){
+				$e.cursor.show();
+				$e.subcursor.show();
 				if (!self.isLasso) {
-					var posX = e.pageX - MAP.LEFT - cssPx('#map', 'left'), posY = e.pageY - MAP.TOP - cssPx('#map', 'top');
-					cssPx($cursor, 'top', posY);
-					cssPx($cursor, 'left', posX);
+					var posX = e.pageX - self.areaMap.LEFT - cssPx($e.map, 'left'), posY = e.pageY - self.areaMap.TOP - cssPx($e.map, 'top');
+					cssPx($e.cursor, 'top', posY);
+					cssPx($e.cursor, 'left', posX);
+					/*
+					cssPx($e.subcursor, 'top', posY + 32);
+					cssPx($e.subcursor, 'left', posX + 32);
+					*/
 				}
 			});
-			$lasso.bind('mouseenter', function(e){
+			$e.lasso.bind('mouseenter', function(e){
 				e.stopPropagation();
 				self.isLasso = true;
 				var slot = self.getSlotData(e.target);
-				cssPx($cursor, 'top', slot.top);
-				cssPx($cursor, 'left', slot.left);
+				cssPx($e.cursor, 'top', slot.top);
+				cssPx($e.cursor, 'left', slot.left);
+				/*
+				cssPx($e.subcursor, 'top', slot.top + 32);
+				cssPx($e.subcursor, 'left', slot.left + 32);
+				*/
 			});
-			$lasso.bind('mouseleave', function(e){
+			$e.lasso.bind('mouseleave', function(e){
 				e.stopPropagation();
 				self.isLasso = false;
 			});
-			$lasso.bind('click', function(e){
+			$e.lasso.bind('click', function(e){
 				e.stopPropagation();
 				self.isLasso = false;
-				$map.mouseleave();
+				$e.map.mouseleave();
 				var slot = self.getSlotData(e.target);
-				self.mapTiles[slot.row][slot.col] = currTile;
+				self.tiles[slot.row][slot.col] = currTile;
+
 				self.clearMap();
-				$map.append(Format.img({id: 'cursor', class: 'tile', src: getImgName(currTile), style: 'display: none'})); // add cursor
-				$cursor = $('#cursor', $map);
-				cursor = $cursor.get(0);
-				// TODO:
-				// 1. pass turn to another player
-				// 2. extend map for another slots
-				self.drawMap();
-				// 3. re-center map
-				// self.initEvents();
+				self.show();
 			});
 		});
 		$map.mouseleave(function(){
-			var $cursor = $('#cursor', $map);
-			var $lasso = $('.lasso', $map);
+			var $cursor = self.$context().cursor;
+			var $lasso = self.$context().lasso;
 			// $map.css('cursor', 'url(/img/cursor/normal.png), auto');
 			console.log('map.mouseleave');
 			$cursor.hide();
@@ -123,8 +142,26 @@ var TileMap = createClass({
 		});
 		$map.contextmenu(function(){
 			console.log('contextmenu', this);
+			self.rotateTile();
 			return false;
 		});
 
+	},
+
+	rotateTile: function () {
+		this.rotate++;
+		if (this.rotate > 3) {
+			this.rotate = 0;
+		}
+
+		$cursor = this.$context().cursor;
+
+		$cursor.removeClass('rotate1');
+		$cursor.removeClass('rotate2');
+		$cursor.removeClass('rotate3');
+
+		if (this.rotate) {
+			$cursor.addClass('rotate' + this.rotate);
+		}
 	}
 });

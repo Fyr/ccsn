@@ -8,9 +8,10 @@
 	<script type="text/javascript" src="./js/vendor/jquery.1.11.0.min.js"></script>
 	<script type="text/javascript" src="./js/vendor/class.js"></script>
 	<script type="text/javascript" src="./js/format.js"></script>
+	<script type="text/javascript" src="./js/area-map.js"></script>
 	<script type="text/javascript" src="./js/nav.js"></script>
 	<script type="text/javascript" src="./js/tile-data.js"></script>
-	<script type="text/javascript" src="./js/tile-set.js"></script>
+	<!-- script type="text/javascript" src="./js/tile-set.js"></script -->
 	<script type="text/javascript" src="./js/tile-map.js"></script>
 
 <script>
@@ -48,11 +49,9 @@ $(function(){
 		['',     'r34',  't1-r24', 'r34', 'slot'],
 		['',    'slot',   'slot', 'slot',     '']
 	];
-	tm = new TileMap(expected);
+	tm = new TileMap('#map', AreaMap, expected);
 	// tm.setData([['', 'slot', ''], ['slot', 't1-r24', 'slot'], ['', 'slot', '']]);
-	tm.init();
-	tm.drawMap();
-	tm.initEvents();
+	tm.show();
 	/*
 	alert('!');
 	ts.clearMap();

@@ -1,8 +1,8 @@
 function createClass(data)
 {
 	var abstracts = data.abstracts || [],
-		statics = data.statics || {},
-		extend = data.extend || [];
+		statics = data.static || {},
+		extend = data.extends || [];
 
 	if(!(extend instanceof Array))
 		extend  = [extend];
@@ -26,8 +26,8 @@ function createClass(data)
 
 	delete data.construct;
 	delete data.abstracts;
-	delete data.statics;
-	delete data.extend;
+	delete data.static;
+	delete data.extends;
 
 
 	// borrow methods from parent classes
