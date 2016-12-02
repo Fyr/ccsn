@@ -1,5 +1,5 @@
 var TileMap = createClass({
-	construct: function(eMap, areaMap, tiles, activeTile){
+	construct: function (eMap, areaMap, tiles, activeTile) {
 		this.isLasso = false;
 		this.tiles = tiles;
 		this.areaMap = areaMap;
@@ -132,8 +132,6 @@ var TileMap = createClass({
 		$map.mouseleave(function(){
 			var $cursor = self.$context().cursor;
 			var $lasso = self.$context().lasso;
-			// $map.css('cursor', 'url(/img/cursor/normal.png), auto');
-			console.log('map.mouseleave');
 			$cursor.hide();
 			$map.unbind('mousemove');
 			$lasso.unbind('mouseenter');
