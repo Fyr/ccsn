@@ -1,40 +1,36 @@
 var TileMap = createClass({
-	construct: function (eMap, areaMap, tiles, activeTile) {
+	construct: function (eMap, areaMap, tileSet) {
 		this.isLasso = false;
-		this.tiles = tiles;
+		this.tileSet = tileSet;
 		this.areaMap = areaMap;
 		this.map = {e: eMap, left: 0, top: 0};
-		this.activeTile = activeTile;
 		this.rotate = 0;
 	},
 
 	init: function () {
-		var tiles = {rows: this.tiles.length, cols: this.tiles[0].length};
-
 		cssPx(this.map.e, 'width', this.areaMap.W + 200); // пока сделал специально больше чем area - test на скроллинг карты внутри Area
 		cssPx(this.map.e, 'height', this.areaMap.H + 100);
 
-		this.map.left = Math.round((this.areaMap.W - this.areaMap.TILE * tiles.cols) / 2);
-		this.map.top = Math.round((this.areaMap.H - this.areaMap.TILE * tiles.rows) / 2);
-
-		// insertTile('t1-r24', pos);
+		this.map.left = Math.round((this.areaMap.W - this.areaMap.TILE * this.tileSet.getCols()) / 2);
+		this.map.top = Math.round((this.areaMap.H - this.areaMap.TILE * this.tileSet.getRows()) / 2);
 	},
 
 	addCursor: function() {
-		$(this.map.e).append(Format.img({src: getImgName(this.activeTile), id: 'cursor', class: 'tile'}));
+		$(this.map.e).append(Format.img({src: this.tileSet.getImgSrc(), id: 'cursor', class: 'tile'}));
 		// $(this.map.e).append(Format.img({src: '/img/cursor/mouse.png', id: 'subcursor', class: 'tile'}));
 	},
 
-	drawTile: function (tile, pos) {
-		var img = Format.img({class: 'tile', src: getImgName(tile), style: 'top: ' + pos.h + 'px; left: ' + pos.w + 'px'});
+	drawTile: function (tile, row, col) {
+		var pos = {w: this.map.left + col * this.areaMap.TILE, h: this.map.top + row * this.areaMap.TILE};
+		var img = Format.img({class: 'tile', src: this.tileSet.getImgSrc(tile), style: 'top: ' + pos.h + 'px; left: ' + pos.w + 'px'});
 		$map = $(this.map.e);
 		$map.append(img);
 		if (tile == 'slot') {
 			var lasso = Format.img({
 				class: 'lasso',
 				src: '/img/blank.gif',
-				'data-row': pos.row,
-				'data-col': pos.col,
+				'data-row': row,
+				'data-col': col,
 				style: 'top: ' + (pos.h - this.areaMap.LASSO) + 'px; left: ' + (pos.w - this.areaMap.LASSO) + 'px; width: ' + this.areaMap.LASSO * 2 + 'px; height: ' + this.areaMap.LASSO * 2 + 'px; z-index: 5'
 			});
 			$map.append(lasso);
@@ -42,12 +38,11 @@ var TileMap = createClass({
 	},
 
 	drawMap: function () {
-		for(var i = 0; i < this.tiles.length; i++) {
-			for(var j = 0; j < this.tiles[i].length; j++) {
-				var tile = this.tiles[i][j];
+		for(var i = 0; i < this.tileSet.getRows(); i++) {
+			for(var j = 0; j < this.tileSet.getCols(); j++) {
+				var tile = this.tileSet.getTile(i, j);
 				if (tile) {
-					// this.insertTile(tile, {w: this.map.left + pos.w, h: this.map.top + pos.h, row: i, col: j});
-					this.drawTile(tile, {w: this.map.left + j * this.areaMap.TILE, h: this.map.top + i * this.areaMap.TILE, row: i, col: j});
+					this.drawTile(tile, i, j);
 				}
 			}
 		}
@@ -86,9 +81,8 @@ var TileMap = createClass({
 		var $map = this.$context().map;
 		$map.mouseenter(function(){
 			var $e = self.$context();
-			console.log('map.mouseenter');
 			$e.map.css('cursor', 'none');
-			$e.cursor.attr('src', getImgName(currTile));
+			$e.cursor.attr('src', self.tileSet.getImgSrc());
 			self.isLasso = false;
 			$e.map.bind('mousemove', function(e){
 				$e.cursor.show();
@@ -139,7 +133,6 @@ var TileMap = createClass({
 			$lasso.unbind('click');
 		});
 		$map.contextmenu(function(){
-			console.log('contextmenu', this);
 			self.rotateTile();
 			return false;
 		});

@@ -1,10 +1,52 @@
 var TileSet = createClass({
-	construct: function () {
+	construct: function (data, activeTile) {
+		this.data = [];
+		this.activeTile = '';
 
+		if (data) {
+			this.setData(data);
+		}
+		if (activeTile) {
+			this.setActiveTile(activeTile);
+		}
 	},
 
-	setData: function (data, activeTile) {
+	setData: function (data) {
 		this.tiles = data;
+	},
+
+	getData: function () {
+		return this.tiles;
+	},
+
+	setActiveTile: function (activeTile) {
+		this.activeTile = activeTile;
+	},
+
+	getActiveTile: function () {
+		return this.activeTile;
+	},
+
+	getImgSrc: function (tile) {
+		if (!tile) {
+			tile = this.getActiveTile();
+		}
+		// tile - может быть тайл или слот
+		return '/img/tiles/tile-' + tile + '.png';
+	},
+
+	getRows: function () {
+		return this.getData().length;
+	},
+
+	getCols: function () {
+		return this.getData()[0].length;
+	},
+
+	getTile: function (i, j) {
+		return this.getData()[i][j];
+		var e = this.getData()[i][j].split('|');
+		// return {src: this.getImgSrc(e[0]), class: 'rotate' + }
 	}
 });
 /*

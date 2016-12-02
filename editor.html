@@ -8,6 +8,7 @@
 	<script type="text/javascript" src="./js/vendor/jquery.1.11.0.min.js"></script>
 	<script type="text/javascript" src="./js/format.js"></script>
 	<script type="text/javascript" src="./js/tile-data.js"></script>
+	<script type="text/javascript" src="./js/tile-set.js"></script>
 
 <style>
 	#tile span {padding: 0 7px; font-size: 2em; border: 1px solid #eee; cursor: pointer;}
@@ -22,13 +23,6 @@
 <script>
 var currTerra;
 var tile;
-
-function getImgName(tile) {
-	if (tile == 'slot') {
-		return '/img/tiles/placeholder.png';
-	}
-	return '/img/tiles/tile-' + tile + '.png';
-}
 
 function renderTile(tile) {
 	var html = '';

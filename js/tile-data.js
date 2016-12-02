@@ -10,7 +10,6 @@
 */
 
 var TILES = {
-	// GROUND: 'G', ROAD: 'R', CROSSROAD: 'C', TOWN: 'T', MONASTERY: 'M', Z_POINT: 'Z',
 	't1': [
 		'ZTTTTTZ',
 		'GGGGGGG',
