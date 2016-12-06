@@ -1,155 +1,34 @@
 QUnit.test("TileSet tests", function (assert) {
 	var ts = new TileSet();
-	var expected = null;
-
-	expected = [
-		['',     'slot',   ''    ],
-		['slot', 't1-r24', 'slot'],
-		['',     'slot',   ''    ]
-	];
-	assert.deepEqual(ts.getData(), expected, 'Initial map state');
-
 	data = [
-		['',     '',       ''    ],
-		['',     't1-r24', 'r34' ],
-		['',     '',       ''    ]
+		['r34',  '',       'r13'],
+		['r23',  't1-r24', 'r34'],
+		['',     '',       'r13'],
 	];
-	ts.setData(data);
-	ts.extendData();
-	expected = [
-		['',     '',       '',    ''],
-		['',     't1-r24', 'r34', ''],
-		['',     '',       '',    '']
-	];
-	assert.deepEqual(ts.getData(), expected, 'Extend data right');
-
-	data = [
-		['',     '',       '',    ''],
-		['r23',  't1-r24', 'r34', ''],
-		['',     '',       '',    '']
-	];
-	ts.setData(data);
+	ts.setTiles(data);
 	ts.extendData();
 	expected = [
 		['',     '',     '',       '',    ''],
-		['',     'r23',  't1-r24', 'r34', ''],
-		['',     '',     '',       '',    '']
-	];
-	assert.deepEqual(ts.getData(), expected, 'Extend data left');
-
-	data = [
-		['',     'r34',  '',       '',    ''],
-		['',     'r23',  't1-r24', 'r34', ''],
-		['',     '',     '',       '',    '']
-	];
-	ts.setData(data);
-	ts.extendData();
-	expected = [
-		['',     '',     '',       '',    ''],
-		['',     'r34',  '',       '',    ''],
-		['',     'r23',  't1-r24', 'r34', ''],
-		['',     '',     '',       '',    '']
-	];
-	assert.deepEqual(ts.getData(), expected, 'Extend data top');
-
-	data = [
-		['',     '',     '',       '',    ''],
-		['',     'r34',  '',       '',    ''],
-		['',     'r23',  't1-r24', 'r34', ''],
-		['',     '',     '',       'r13', '']
-	];
-	ts.setData(data);
-	ts.extendData();
-	expected = [
-		['',     '',     '',       '',    ''],
-		['',     'r34',  '',       '',    ''],
+		['',     'r34',  '',       'r13', ''],
 		['',     'r23',  't1-r24', 'r34', ''],
 		['',     '',     '',       'r13', ''],
 		['',     '',     '',       '',    '']
 	];
-	assert.deepEqual(ts.getData(), expected, 'Extend data bottom');
-
-	data = [
-		['',     '',     '',       '',    ''],
-		['',     'r34',  't1',     'r13', ''],
-		['',     'r23',  't1-r24', 'r34', ''],
-		['',     '',     '',       'r13', ''],
-		['',     '',     '',       '',    '']
-	];
-	ts.setData(data);
-	ts.extendData();
-	expected = [
-		['',     '',     '',       '',    ''],
-		['',     'r34',  't1',     'r13', ''],
-		['',     'r23',  't1-r24', 'r34', ''],
-		['',     '',     '',       'r13', ''],
-		['',     '',     '',       '',    '']
-	];
-	assert.deepEqual(ts.getData(), expected, 'No extend');
+	assert.deepEqual(ts.getTiles(), expected, 'Extend all');
 
 	data = [
 		['',     '',       '',     ''],
 		['',     't1-r24', 'r34',  ''],
 		['',     '',       '',     '']
 	];
-	ts.setData(data);
+	ts.setTiles(data);
 	ts.revealSlots();
 	expected = [
 		['',     'slot',   'slot', ''    ],
 		['slot', 't1-r24', 'r34',  'slot'],
 		['',     'slot',   'slot', ''    ]
 	];
-	assert.deepEqual(ts.getData(), expected, 'Reveal slots - 2 tiles only');
-
-	data = [
-		['',     '',     '',       '',    '',    ''],
-		['',     '',     'r13',    'r13', '',    ''],
-		['',     'r13',  'r13',    'r13', '',    ''],
-		['',     '',     'r13',    'r13', 'r13', ''],
-		['',     '',     'r13',    'r13', 'r13', ''],
-		['',     '',     '',       'r13', '',    ''],
-		['',     '',     '',       'r13', '',    ''],
-		['',     '',     '',       '',    '',    '']
-	];
-	ts.setData(data);
-	ts.revealSlots();
-	expected = [
-		['',     '',     'slot',   'slot','',     ''],
-		['',     'slot', 'r13',    'r13', 'slot', ''],
-		['slot', 'r13',  'r13',    'r13', 'slot', ''],
-		['',     'slot', 'r13',    'r13', 'r13',  'slot'],
-		['',     'slot', 'r13',    'r13', 'r13',  'slot'],
-		['',     '',     'slot',   'r13', 'slot', ''],
-		['',     '',     'slot',   'r13', 'slot', ''],
-		['',     '',     '',       'slot','',     '']
-	];
-	assert.deepEqual(ts.getData(), expected, 'Reveal slots - perimeter');
-
-	data = [
-		['',     '',     '',       '',    '',    '',     '',     '',      '',     '',    ''],
-		['',     '',     'r13',    'r13', '',    '',     '',     'r13',   'r13',  'r13', ''],
-		['',     'r13',  'r13',    'r13', 'r13', 'r13',  'r13',  'r13',   'r13',  '',    ''],
-		['',     '',     'r13',    'r13', '',    '',     'r13',  'r13',   'r13',  'r13', ''],
-		['',     '',     '',       'r13', '',    '',     '',     'r13',   'r13',  'r13', ''],
-		['',     '',     '',       'r13', 'r13', '',     '',     '',      'r13',  '',    ''],
-		['',     'r13',  '',       'r13', 'r13', '',     '',     '',      '',     '',    ''],
-		['',     'r13',  'r13',    'r13', '',    '',     '',     '',      '',     '',    ''],
-		['',     '',     '',       '',    '',    '',     '',     '',      '',     '',    '']
-	];
-	ts.setData(data);
-	ts.revealSlots();
-	expected = [
-		['',     '',     'slot',   'slot', '',    '',     '',     'slot',  'slot', 'slot',''],
-		['',     'slot', 'r13',    'r13', 'slot', 'slot', 'slot', 'r13',   'r13',  'r13', 'slot'],
-		['slot', 'r13',  'r13',    'r13', 'r13',  'r13',  'r13',  'r13',   'r13',  'slot',''],
-		['',     'slot', 'r13',    'r13', 'slot', 'slot', 'r13',  'r13',   'r13',  'r13', 'slot'],
-		['',     '',     'slot',   'r13', 'slot', '',     'slot', 'r13',   'r13',  'r13', 'slot'],
-		['',     'slot', 'slot',   'r13', 'r13',  'slot', '',     'slot',  'r13',  'slot',''],
-		['slot', 'r13',  'slot',   'r13', 'r13',  'slot', '',     '',      'slot', '',    ''],
-		['slot', 'r13',  'r13',    'r13', 'slot', '',     '',     '',      '',     '',    ''],
-		['',     'slot', 'slot',   'slot','',     '',     '',     '',      '',     '',    '']
-	];
-	assert.deepEqual(ts.getData(), expected, 'Reveal slots - slot coverage & neck');
+	assert.deepEqual(ts.getTiles(), expected, 'Reveal slots - 2 tiles only');
 
 	data = [
 		['',     '',     '',       '',    '',    '',     '',     '',      '',     '',    ''],
@@ -162,7 +41,7 @@ QUnit.test("TileSet tests", function (assert) {
 		['',     'r13',  'r13',    'r13', '',    '',     '',     '',      '',     '',    ''],
 		['',     '',     '',       '',    '',    '',     '',     '',      '',     '',    '']
 	];
-	ts.setData(data);
+	ts.setTiles(data);
 	ts.revealSlots();
 	expected = [
 		['',      '',     'slot',   'slot','',      '',     '',     'slot',  'slot', 'slot', ''],
@@ -175,35 +54,23 @@ QUnit.test("TileSet tests", function (assert) {
 		['slot',  'r13',  'r13',    'r13', 'slot',  'slot', 'slot', '',      '',     '',    ''],
 		['',      'slot', 'slot',   'slot','',      '',     '',     '',      '',     '',    '']
 	];
-	assert.deepEqual(ts.getData(), expected, 'Reveal slots - slot coverage & ring');
-
+	assert.deepEqual(ts.getTiles(), expected, 'Reveal slots - complex case');
+/*
 	data = [
-		['',      '',     'slot',   'slot','',      '',     '',     'slot',  'slot', 'slot', ''],
-		['',      'slot', 'r13',    'r13', 'slot',  'slot', 'slot', 'r13',   'r13',  'r13', 'slot'],
-		['slot',  'r13',  'r13',    'r13', 'r13',   'r13',  'r13',  'r13',   'r13',  'slot',''],
-		['slot',  'r13',  'r13',    'r13', 'slot',  'slot', 'r13',  'r13',   'slot', 'r13', 'slot'],
-		['slot',  'r13',  'slot',   'r13', 'slot',  'slot', 'r13',  'r13',   'r13',  'r13', 'slot'],
-		['slot',  'r13',  'slot',   'r13', 'slot',  'slot', 'r13',  'slot',  'r13',  'slot',''],
-		['slot',  'r13',  'slot',   'r13', 'r13',   'r13',  'r13',  'slot',  'slot', '',    ''],
-		['slot',  'r13',  'r13',    'r13', 'slot',  'slot', 'slot', '',      '',     '',    ''],
-		['',      'slot', 'slot',   'slot','',      '',     '',     '',      '',     '',    '']
+		['',     '',       '',     ''],
+		['',     't1-r24', 'r34',  ''],
+		['',     '',       '',     '']
 	];
-	ts.setData(data);
-	ts.clearSlots();
+	ts.setTiles(data);
+	ts.setActiveTile('r34');
+	ts.
 	expected = [
-		['',     '',     '',       '',    '',    '',     '',     '',      '',     '',    ''],
-		['',     '',     'r13',    'r13', '',    '',     '',     'r13',   'r13',  'r13', ''],
-		['',     'r13',  'r13',    'r13', 'r13', 'r13',  'r13',  'r13',   'r13',  '',    ''],
-		['',     'r13',  'r13',    'r13', '',    '',     'r13',  'r13',   '',     'r13', ''],
-		['',     'r13',  '',       'r13', '',    '',     'r13',  'r13',   'r13',  'r13', ''],
-		['',     'r13',  '',       'r13', '',    '',     'r13',  '',      'r13',  '',    ''],
-		['',     'r13',  '',       'r13', 'r13', 'r13',  'r13',  '',      '',     '',    ''],
-		['',     'r13',  'r13',    'r13', '',    '',     '',     '',      '',     '',    ''],
-		['',     '',     '',       '',    '',    '',     '',     '',      '',     '',    '']
+		['',     '',          '',     ''],
+		['',     't1-r24', 'r34',     ''],
+		['',     'slot',      '',     '']
 	];
-	assert.deepEqual(ts.getData(), expected, 'Clear slots');
-
-
+	assert.deepEqual(ts.getTiles(), expected, 'Reveal slots - complex case');
+	*/
 /*
 	TODO: продумать тесты для выявления курсоров
 	1. Тест на продолжение дороги (дорога/дорога)
@@ -223,9 +90,9 @@ QUnit.test("TileSet tests", function (assert) {
 		['cursor', 'r13',    'r13',    'cursor'],
 		['',       'cursor', 'cursor', '']
 	];
-	ts.setData();
+	ts.setTiles();
 	ts.revealAvailableSlots('r13');
-	assert.deepEqual(ts.getData(), expected, 'Check available slots - road 13 - multiple road/road ground/ground');
+	assert.deepEqual(ts.getTiles(), expected, 'Check available slots - road 13 - multiple road/road ground/ground');
 
 	data = [
 		['',       'slot',   '',       ''],
@@ -240,8 +107,8 @@ QUnit.test("TileSet tests", function (assert) {
 		['cursor', 'r13',    'r13',    'cursor'],
 		['',       'cursor', 'cursor', '']
 	];
-	ts.setData();
+	ts.setTiles();
 	ts.revealAvailableSlots('r13');
-	assert.deepEqual(ts.getData(), expected, 'Check available slots - road 13 - multiple road/road ground/ground town/slot');
+	assert.deepEqual(ts.getTiles(), expected, 'Check available slots - road 13 - multiple road/road ground/ground town/slot');
 	*/
 });

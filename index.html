@@ -7,6 +7,7 @@
 
 	<script type="text/javascript" src="./js/vendor/jquery.1.11.0.min.js"></script>
 	<script type="text/javascript" src="./js/vendor/class.js"></script>
+	<script type="text/javascript" src="./js/json_x.js"></script>
 	<script type="text/javascript" src="./js/format.js"></script>
 	<script type="text/javascript" src="./js/area-map.js"></script>
 	<script type="text/javascript" src="./js/nav.js"></script>
@@ -41,34 +42,25 @@ $(function(){
 	// var tileSet = [['', 'slot', ''], ['slot', 't1-r24', 'slot'], ['', 'slot', '']];
 	var expected = [
 		['',    'slot',       '',     '',     ''],
-		['slot', 'r34',   'slot',     '',     ''],
-		['',     'r34',  't1-r24', 'r34', 'slot'],
+		['slot','slot',   'slot',     '',     ''],
+		['',   'slot',   't1-r24', 'r34', 'slot'],
 		['',    'slot',   'slot', 'slot',     '']
 	];
 	var ts = new TileSet(expected, 'r34');
 	tm = new TileMap('#map', AreaMap, ts);
-	// tm.setData([['', 'slot', ''], ['slot', 't1-r24', 'slot'], ['', 'slot', '']]);
 	tm.show();
-	/*
-	alert('!');
-	ts.clearMap();
-	ts.clearSlots();
-	ts.drawMap();
-	*/
-	// ts.initEvents();
-/*
+
 	for(var tile in TILES) {
 		var img = Format.tag('img', {class: 'choose-tile', src: getImgName(tile), alt: '', 'data-name': tile});
 		$('#tiles').append(img);
 	}
-	$('#tiles img[data-name="' + currTile + '"]').addClass('active');
 
 	$('#tiles img').click(function(){
 		$('#tiles img').removeClass('active');
 		$(this).addClass('active');
-		currTile = $(this).data('name');
+		ts.setActiveTile($(this).data('name'));
 	});
-	*/
+
 });
 </script>
 </head>

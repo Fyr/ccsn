@@ -118,7 +118,7 @@ var TILES = {
 		'TGGRGGT',
 		'ZGGRGGZ'
 	],
-	't1234': [
+	't1234-s': [
 		'ZTTTTTZ',
 		'TTTTTTT',
 		'TTTTTTT',
@@ -182,3 +182,45 @@ var TILES = {
 		'ZGGRGGZ'
 	]
 };
+var TileData = createClass({
+	construct: function(data) {
+		this.data = data;
+	},
+
+	split: function (tile) {
+		var tile = this.getActiveTile().split('|');
+		return {tile: tile[0], dir: (tile.length > 1) ? tile[1] : 0};
+	},
+
+	decode: function (data) {
+		var aData = [], s;
+		for(var i = 0; i < data.length; i++) {
+			aData[i] = [];
+			var s = data[i];
+			for(var j = 0; j < s.length; j++) {
+				aData[i][j] = s[j];
+			}
+		}
+		return aData;
+	},
+
+	getData: function (tile, dir) {
+		var data = this.decode(this.data[tile]);
+		for(var i = 1; i <= dir; i++) {
+			data = this.rotate(data);
+		}
+	},
+
+	rotate: function (aTileData) {
+		// поворот делается по часовой стрелке
+		var data = [], _data;
+		for(var j = 0; j < aTileData[0].length; j++) {
+			_data = [];
+			for(var i = aTileData.length - 1; i >= 0; i--) {
+				_data.push(aTileData[i][j]);
+			}
+			data.push(_data);
+		}
+		return data;
+	}
+});
