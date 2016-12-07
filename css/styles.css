@@ -1,5 +1,5 @@
 html, body { cursor: url('../img/cursor/normal.png'), auto; }
-.tile { display: block; border: 0px none; width: 46px; height: 46px; position: absolute; top: 0; left: 0;}
+.tile { display: block; border: 0px none; width: 44px; height: 44px; position: absolute; top: 0; left: 0;}
 .lasso { display: block; border: 0px none; position: absolute; top: 0; left: 0;}
 #area { border: 1px solid red; position: fixed; overflow: hidden; }
 #tiles { position: fixed; overflow: hidden; top: 600px; }
