@@ -1,5 +1,5 @@
 QUnit.test("TileSet tests", function (assert) {
-	var ts = new TileSet();
+	var ts = new TileSet(null, null, new TileData(TILES));
 	data = [
 		['r34',  '',       'r13'],
 		['r23',  't1-r24', 'r34'],
@@ -15,6 +15,7 @@ QUnit.test("TileSet tests", function (assert) {
 		['',     '',     '',       '',    '']
 	];
 	assert.deepEqual(ts.getTiles(), expected, 'Extend all');
+
 
 	data = [
 		['',     '',       '',     ''],
@@ -55,7 +56,7 @@ QUnit.test("TileSet tests", function (assert) {
 		['',      'slot', 'slot',   'slot','',      '',     '',     '',      '',     '',    '']
 	];
 	assert.deepEqual(ts.getTiles(), expected, 'Reveal slots - complex case');
-/*
+
 	data = [
 		['',     '',       '',     ''],
 		['',     't1-r24', 'r34',  ''],
@@ -63,14 +64,44 @@ QUnit.test("TileSet tests", function (assert) {
 	];
 	ts.setTiles(data);
 	ts.setActiveTile('r34');
-	ts.
+	ts.calcActiveSlots();
 	expected = [
 		['',     '',          '',     ''],
 		['',     't1-r24', 'r34',     ''],
 		['',     'slot',      '',     '']
 	];
-	assert.deepEqual(ts.getTiles(), expected, 'Reveal slots - complex case');
-	*/
+	assert.deepEqual(ts.getTiles(), expected, 'Create active slot - road match ground');
+
+	data = [
+		['',     '',       '',     ''],
+		['',     't1-r24', 'r34',  ''],
+		['',     '',       '',     '']
+	];
+	ts.setTiles(data);
+	ts.setActiveTile('r34|2');
+	ts.calcActiveSlots();
+	expected = [
+		['',     '',      'slot',     ''],
+		['slot', 't1-r24', 'r34', 'slot'],
+		['',     '',      'slot',     '']
+	];
+	assert.deepEqual(ts.getTiles(), expected, 'Create active slot - rotated road match road');
+
+	data = [
+		['',     '',       '',     ''],
+		['',     't1-r24', 'r34',  ''],
+		['',     '',       '',     '']
+	];
+	ts.setTiles(data);
+	ts.setActiveTile('t1-r234|2');
+	ts.calcActiveSlots();
+	expected = [
+		['',       'slot',    '',     ''],
+		['slot', 't1-r24', 'r34',     ''],
+		['',     '',      'slot',     '']
+	];
+	assert.deepEqual(ts.getTiles(), expected, 'Create active slot - rotated town+crossroad match town and road');
+
 /*
 	TODO: продумать тесты для выявления курсоров
 	1. Тест на продолжение дороги (дорога/дорога)

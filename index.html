@@ -40,13 +40,18 @@ $(function(){
 	*/
 
 	// var tileSet = [['', 'slot', ''], ['slot', 't1-r24', 'slot'], ['', 'slot', '']];
+	/*
 	var expected = [
 		['',    'slot',       '',     '',     ''],
 		['slot','slot',   'slot',     '',     ''],
 		['',   'slot',   't1-r24', 'r34', 'slot'],
 		['',    'slot',   'slot', 'slot',     '']
 	];
-	var ts = new TileSet(expected, 'r34');
+	*/
+	var map = [
+		['t1-r24', 'r34']
+	];
+	var ts = new TileSet(map, 'r34', new TileData(TILES));
 	tm = new TileMap('#map', AreaMap, ts);
 	tm.show();
 
@@ -59,6 +64,10 @@ $(function(){
 		$('#tiles img').removeClass('active');
 		$(this).addClass('active');
 		ts.setActiveTile($(this).data('name'));
+
+		$('#map #cursor').removeClass('rotate1');
+		$('#map #cursor').removeClass('rotate2');
+		$('#map #cursor').removeClass('rotate3');
 	});
 
 });

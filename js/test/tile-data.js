@@ -43,4 +43,52 @@ QUnit.test("TileData tests", function (assert) {
 		['Z','G','G','R','G','G','Z']
 	];
 	assert.deepEqual(td.getData('t1-r234', 3), expected, 'getData + rotate 3');
+
+	data = [
+		['Z','G','G','R','G','G','Z'],
+		['G','G','G','R','G','G','T'],
+		['G','G','G','R','G','G','T'],
+		['R','R','R','R','G','G','T'],
+		['G','G','G','G','G','G','T'],
+		['G','G','G','G','G','G','T'],
+		['Z','G','G','G','G','G','Z']
+	];
+	expected = 'ZGGRGGZ';
+	assert.deepEqual(td.getSide(data, 0), expected, 'getSide 0');
+
+	data = [
+		['Z','G','G','R','G','G','Z'],
+		['G','G','G','R','G','G','T'],
+		['G','G','G','R','G','G','T'],
+		['R','R','R','R','G','G','T'],
+		['G','G','G','G','G','G','T'],
+		['G','G','G','G','G','G','T'],
+		['Z','G','G','G','G','G','Z']
+	];
+	expected = 'ZTTTTTZ';
+	assert.deepEqual(td.getSide(data, 1), expected, 'getSide 1');
+
+	data = [
+		['Z','G','G','R','G','G','Z'],
+		['G','G','G','R','G','G','T'],
+		['G','G','G','R','G','G','T'],
+		['R','R','R','R','G','G','T'],
+		['G','G','G','G','G','G','T'],
+		['G','G','G','G','G','G','T'],
+		['Z','G','G','G','G','G','Z']
+	];
+	expected = 'ZGGGGGZ';
+	assert.deepEqual(td.getSide(data, 2), expected, 'getSide 2');
+
+	data = [
+		['Z','G','G','R','G','G','Z'],
+		['G','G','G','R','G','G','T'],
+		['G','G','G','R','G','G','T'],
+		['R','R','R','R','G','G','T'],
+		['G','G','G','G','G','G','T'],
+		['G','G','G','G','G','G','T'],
+		['Z','G','G','G','G','G','Z']
+	];
+	expected = 'ZGGRGGZ';
+	assert.deepEqual(td.getSide(data, 3), expected, 'getSide 3');
 });

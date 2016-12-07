@@ -4,27 +4,47 @@ var TileMap = createClass({
 		this.tileSet = tileSet;
 		this.areaMap = areaMap;
 		this.map = {e: eMap, left: 0, top: 0};
-		this.rotate = 0;
+
+		this.init();
 	},
 
 	init: function () {
-		cssPx(this.map.e, 'width', this.areaMap.W + 200); // пока сделал специально больше чем area - test на скроллинг карты внутри Area
-		cssPx(this.map.e, 'height', this.areaMap.H + 100);
+		var $e = this.$context();
+		cssPx($e.map, 'width', this.areaMap.W + 200); // пока сделал специально больше чем area - test на скроллинг карты внутри Area
+		cssPx($e.map, 'height', this.areaMap.H + 100);
 
 		this.map.left = Math.round((this.areaMap.W - this.areaMap.TILE * this.tileSet.getCols()) / 2);
 		this.map.top = Math.round((this.areaMap.H - this.areaMap.TILE * this.tileSet.getRows()) / 2);
+
+		this.tileSet.extendData();
 	},
 
-	addCursor: function() {
-		$(this.map.e).append(Format.img({src: this.tileSet.getImgSrc(), id: 'cursor', class: 'tile'}));
+	addCursor: function(pos) {
+		var tile = this.getTileImage(this.tileSet.getActiveTile());
+		var $e = this.$context();
+		$e.map.append(Format.img({src: tile.src, id: 'cursor', class: tile.class}));
+		if (pos) {
+			this.setCursorPos(pos);
+		}
 		// $(this.map.e).append(Format.img({src: '/img/cursor/mouse.png', id: 'subcursor', class: 'tile'}));
 	},
 
+	getCursorPos: function (e) {
+		var $e = this.$context();
+		return {x: e.pageX - this.areaMap.LEFT - cssPx($e.map, 'left'), y: e.pageY - this.areaMap.TOP - cssPx($e.map, 'top')};
+	},
+
+	setCursorPos: function (pos) {
+		var $e = this.$context();
+		cssPx($e.cursor, 'top', pos.y);
+		cssPx($e.cursor, 'left', pos.x);
+	},
+
 	drawTile: function (tile, row, col) {
+		var img = this.getTileImage(tile);
 		var pos = {w: this.map.left + col * this.areaMap.TILE, h: this.map.top + row * this.areaMap.TILE};
-		var img = Format.img({class: 'tile', src: this.tileSet.getImgSrc(tile), style: 'top: ' + pos.h + 'px; left: ' + pos.w + 'px'});
-		$map = $(this.map.e);
-		$map.append(img);
+		var $map = this.$context().map;
+		$map.append(Format.img({class: img.class, src: img.src, style: 'top: ' + pos.h + 'px; left: ' + pos.w + 'px'}));
 		if (tile == 'slot') {
 			var lasso = Format.img({
 				class: 'lasso',
@@ -35,6 +55,20 @@ var TileMap = createClass({
 			});
 			$map.append(lasso);
 		}
+	},
+
+	getImgSrc: function (tile) {
+		return '/img/tiles/tile-' + tile + '.png';
+	},
+
+	// dir = 0..3;
+	getImgClass: function (dir) {
+		return (dir > 0) ? 'tile rotate' + dir : 'tile';
+	},
+
+	getTileImage: function (tile) {
+		var e = tile.split('|');
+		return {src: this.getImgSrc(e[0]), class: this.getImgClass(e.length > 1 ? e[1] : 0)};
 	},
 
 	drawMap: function () {
@@ -49,7 +83,11 @@ var TileMap = createClass({
 	},
 
 	clearMap: function () {
+		var $map = this.$context().map;
+		$map.unbind('mouseenter');
+		$map.unbind('mouseleave');
 		$map.html('');
+
 		/*
 		 $('#map .tile').remove();
 		 $('#map .lasso').remove();
@@ -70,7 +108,7 @@ var TileMap = createClass({
 	},
 
 	show: function() {
-		this.init();
+		this.tileSet.calcActiveSlots();
 		this.drawMap();
 		this.addCursor();
 		this.initEvents();
@@ -79,80 +117,82 @@ var TileMap = createClass({
 	initEvents: function() {
 		var self = this;
 		var $map = this.$context().map;
-		$map.mouseenter(function(){
-			var $e = self.$context();
-			$e.map.css('cursor', 'none');
-			$e.cursor.attr('src', self.tileSet.getImgSrc());
-			self.isLasso = false;
-			$e.map.bind('mousemove', function(e){
-				$e.cursor.show();
-				$e.subcursor.show();
-				if (!self.isLasso) {
-					var posX = e.pageX - self.areaMap.LEFT - cssPx($e.map, 'left'), posY = e.pageY - self.areaMap.TOP - cssPx($e.map, 'top');
-					cssPx($e.cursor, 'top', posY);
-					cssPx($e.cursor, 'left', posX);
-					/*
-					cssPx($e.subcursor, 'top', posY + 32);
-					cssPx($e.subcursor, 'left', posX + 32);
-					*/
-				}
-			});
-			$e.lasso.bind('mouseenter', function(e){
-				e.stopPropagation();
-				self.isLasso = true;
-				var slot = self.getSlotData(e.target);
-				cssPx($e.cursor, 'top', slot.top);
-				cssPx($e.cursor, 'left', slot.left);
-				/*
-				cssPx($e.subcursor, 'top', slot.top + 32);
-				cssPx($e.subcursor, 'left', slot.left + 32);
-				*/
-			});
-			$e.lasso.bind('mouseleave', function(e){
-				e.stopPropagation();
-				self.isLasso = false;
-			});
-			$e.lasso.bind('click', function(e){
-				e.stopPropagation();
-				self.isLasso = false;
-				$e.map.mouseleave();
-				var slot = self.getSlotData(e.target);
-				self.tiles[slot.row][slot.col] = currTile;
-
-				self.clearMap();
-				self.show();
-			});
+		$map.mouseenter(function(e){
+			console.log('mouseenter');
+			self.mouseenter(e);
 		});
-		$map.mouseleave(function(){
-			var $cursor = self.$context().cursor;
-			var $lasso = self.$context().lasso;
-			$cursor.hide();
-			$map.unbind('mousemove');
-			$lasso.unbind('mouseenter');
-			$lasso.unbind('mouseleave');
-			$lasso.unbind('click');
+		$map.mouseleave(function(e){
+			console.log('mouseleave');
+			self.mouseleave(e);
 		});
-		$map.contextmenu(function(){
-			self.rotateTile();
-			return false;
-		});
-
 	},
 
-	rotateTile: function () {
-		this.rotate++;
-		if (this.rotate > 3) {
-			this.rotate = 0;
-		}
+	mouseenter: function(e) {
+		var self = this;
+		var $e = self.$context();
+		$e.map.css('cursor', 'none');
+		self.setCursorPos(self.getCursorPos(e));
+		$e.cursor.attr('src', this.getTileImage(this.tileSet.getActiveTile()).src);
+		$e.cursor.show();
+		self.isLasso = false;
+		$e.map.bind('mousemove', function(e){
+			e.stopPropagation();
+			$e.cursor.show();
+			if (!self.isLasso) {
+				self.setCursorPos(self.getCursorPos(e));
+			}
+		});
+		$e.map.bind('contextmenu', function(e){
+			e.stopPropagation();
+			self.rotateTile(e);
+			return false;
+		});
+		$e.lasso.bind('mouseenter', function(e){
+			e.stopPropagation();
+			self.isLasso = true;
+			var slot = self.getSlotData(e.target);
+			cssPx($e.cursor, 'top', slot.top);
+			cssPx($e.cursor, 'left', slot.left);
+		});
+		$e.lasso.bind('mouseleave', function(e){
+			e.stopPropagation();
+			self.isLasso = false;
+		});
+		$e.lasso.bind('click', function(e){
+			e.stopPropagation();
+			self.isLasso = false;
+			var $e = self.$context(), pos = self.getCursorPos(e);
+			self.mouseleave();
+			$e.map.unbind('mouseenter');
+			$e.map.unbind('mouseleave');
+			var slot = self.getSlotData(e.target);
+			self.tileSet.setTile(slot.row, slot.col, self.tileSet.getActiveTile());
+			self.clearMap();
+			self.init();
+			self.show();
+			self.setCursorPos(pos);
+		});
+	},
 
-		$cursor = this.$context().cursor;
+	mouseleave: function(e) {
+		var $e = this.$context();
+		$e.cursor.hide();
+		$e.map.unbind('mousemove');
+		$e.map.unbind('contextmenu');
+		$e.lasso.unbind('mouseenter');
+		$e.lasso.unbind('mouseleave');
+		$e.lasso.unbind('click');
+	},
 
-		$cursor.removeClass('rotate1');
-		$cursor.removeClass('rotate2');
-		$cursor.removeClass('rotate3');
-
-		if (this.rotate) {
-			$cursor.addClass('rotate' + this.rotate);
-		}
+	rotateTile: function (e) {
+		this.isLasso = false;
+		var $e = this.$context(), pos = this.getCursorPos(e);
+		this.mouseleave();
+		$e.map.unbind('mouseenter');
+		$e.map.unbind('mouseleave');
+		this.tileSet.rotate();
+		this.clearMap();
+		this.show();
+		this.mouseenter(e);
 	}
 });
