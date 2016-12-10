@@ -189,11 +189,6 @@ var TileData = createClass({
 		this.cols = 7;
 	},
 
-	split: function (tile) {
-		var tile = tile.split('|');
-		return {tile: tile[0], dir: (tile.length > 1) ? tile[1] : 0};
-	},
-
 	decode: function (data) {
 		var aData = [], s;
 		for(var i = 0; i < this.rows; i++) {
@@ -247,10 +242,6 @@ var TileData = createClass({
 			}
 		}
 		return s;
-	},
-
-	getTileSide: function (tile, side) {
-		var td = this.split(tile);
-		return this.getSide(this.getData(td.tile, td.dir), side);
 	}
+
 });

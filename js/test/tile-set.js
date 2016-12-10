@@ -6,7 +6,7 @@ QUnit.test("TileSet tests", function (assert) {
 		['',     '',       'r13'],
 	];
 	ts.setTiles(data);
-	ts.extendData();
+	ts.extend();
 	expected = [
 		['',     '',     '',       '',    ''],
 		['',     'r34',  '',       'r13', ''],
