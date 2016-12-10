@@ -32,22 +32,6 @@ $(function(){
 	initNav();
 	initNavEvents();
 
-	/*
-	ts = new TileSet();
-	ts.setData([['', 'slot', ''], ['slot', 't1-r24', 'slot'], ['', 'slot', '']]);
-	ts.initTile();
-	ts.drawMap();
-	*/
-
-	// var tileSet = [['', 'slot', ''], ['slot', 't1-r24', 'slot'], ['', 'slot', '']];
-	/*
-	var expected = [
-		['',    'slot',       '',     '',     ''],
-		['slot','slot',   'slot',     '',     ''],
-		['',   'slot',   't1-r24', 'r34', 'slot'],
-		['',    'slot',   'slot', 'slot',     '']
-	];
-	*/
 	var map = [
 		['t1-r24', 'r34']
 	];
@@ -64,10 +48,8 @@ $(function(){
 		$('#tiles img').removeClass('active');
 		$(this).addClass('active');
 		ts.setActiveTile($(this).data('name'));
-
-		$('#map #cursor').removeClass('rotate1');
-		$('#map #cursor').removeClass('rotate2');
-		$('#map #cursor').removeClass('rotate3');
+		tm.clearMap();
+		tm.show();
 	});
 
 });

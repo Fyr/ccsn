@@ -10,13 +10,15 @@ var TileMap = createClass({
 
 	init: function () {
 		var $e = this.$context();
+
+		this.tileSet.extend();
+		/*
 		cssPx($e.map, 'width', this.areaMap.W + 200); // пока сделал специально больше чем area - test на скроллинг карты внутри Area
 		cssPx($e.map, 'height', this.areaMap.H + 100);
-
+		*/
+		// this.checkBounds();
 		this.map.left = Math.round((this.areaMap.W - this.areaMap.TILE * this.tileSet.getCols()) / 2);
 		this.map.top = Math.round((this.areaMap.H - this.areaMap.TILE * this.tileSet.getRows()) / 2);
-
-		this.tileSet.extendData();
 	},
 
 	addCursor: function(pos) {
@@ -107,8 +109,12 @@ var TileMap = createClass({
 		return {map: $(this.map.e), cursor: $('#cursor', this.map.e), lasso: $('.lasso', this.map.e), subcursor: $('#subcursor', this.map.e)};
 	},
 
-	show: function() {
+	show: function(slot) {
+		this.tileSet.clearSlots();
+		this.tileSet.extend();
 		this.tileSet.calcActiveSlots();
+		this.clearMap();
+		this.checkBounds(slot);
 		this.drawMap();
 		this.addCursor();
 		this.initEvents();
@@ -160,17 +166,7 @@ var TileMap = createClass({
 		});
 		$e.lasso.bind('click', function(e){
 			e.stopPropagation();
-			self.isLasso = false;
-			var $e = self.$context(), pos = self.getCursorPos(e);
-			self.mouseleave();
-			$e.map.unbind('mouseenter');
-			$e.map.unbind('mouseleave');
-			var slot = self.getSlotData(e.target);
-			self.tileSet.setTile(slot.row, slot.col, self.tileSet.getActiveTile());
-			self.clearMap();
-			self.init();
-			self.show();
-			self.setCursorPos(pos);
+			self.click(e);
 		});
 	},
 
@@ -191,8 +187,52 @@ var TileMap = createClass({
 		$e.map.unbind('mouseenter');
 		$e.map.unbind('mouseleave');
 		this.tileSet.rotate();
-		this.clearMap();
+		// this.clearMap();
 		this.show();
 		this.mouseenter(e);
+	},
+	
+	click: function (e) {
+		this.isLasso = false;
+		var $e = this.$context(), pos = this.getCursorPos(e);
+		this.mouseleave();
+		$e.map.unbind('mouseenter');
+		$e.map.unbind('mouseleave');
+		var slot = this.getSlotData(e.target);
+		this.tileSet.clearSlots();
+		this.tileSet.setTile(slot.row, slot.col, this.tileSet.getActiveTile());
+		// this.tileSet.extend();
+		// this.checkBounds();
+		// this.clearMap();
+		this.show(slot);
+		this.setCursorPos(pos);
+	},
+
+	checkBounds: function (slot) {
+		if (slot && slot.row == 0) {
+			this.map.top-= this.areaMap.TILE;
+			if (this.map.top < parseInt(this.areaMap.TILE / 2)) {
+				this.map.top+= this.areaMap.TILE;
+			}
+		}
+		if (slot && slot.col == 0) {
+			this.map.left-= this.areaMap.TILE;
+			if (this.map.left < parseInt(this.areaMap.TILE / 2)) {
+				this.map.left+= this.areaMap.TILE;
+			}
+		}
+
+		var map = {
+			w: Math.max(this.areaMap.W, this.map.left + this.areaMap.TILE * (this.tileSet.getCols() + 2)),
+			h: Math.max(this.areaMap.H, this.map.top + this.areaMap.TILE * (this.tileSet.getRows() + 2))
+		}
+		console.log(map);
+		var $e = this.$context();
+		if (cssPx($e.map, 'width') < map.w) {
+			cssPx($e.map, 'width', map.w);
+		}
+		if (cssPx($e.map, 'height') < map.h) {
+			cssPx($e.map, 'height', map.h);
+		}
 	}
 });
