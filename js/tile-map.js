@@ -31,6 +31,16 @@ var TileMap = createClass({
 		// $(this.map.e).append(Format.img({src: '/img/cursor/mouse.png', id: 'subcursor', class: 'tile'}));
 	},
 
+	addMiple: function () {
+		var $e = this.$context();
+		// $e.map.append(Format.img({src: '/img/miple/red/knight.png', class: 'miple', style: 'left: 270px; top: 170px; '}));
+
+		$e.map.append(Format.img({src: '/img/miple/red/knight2.png', class: 'miple', style: 'left: 270px; top: 170px; '}));
+		// $e.map.append(Format.img({src: '/img/miple/red/robber2.png', class: 'miple', style: 'left: 250px; top: 185px; '}));
+		$e.map.append(Format.img({src: '/img/miple/miple-slot.png', class: 'miple', style: 'left: 290px; top: 185px; width: auto;'}));
+
+	},
+
 	getCursorPos: function (e) {
 		var $e = this.$context();
 		return {x: e.pageX - this.areaMap.LEFT - cssPx($e.map, 'left'), y: e.pageY - this.areaMap.TOP - cssPx($e.map, 'top')};
@@ -117,6 +127,7 @@ var TileMap = createClass({
 		this.checkBounds(slot);
 		this.drawMap();
 		this.addCursor();
+		this.addMiple();
 		this.initEvents();
 	},
 
@@ -199,7 +210,7 @@ var TileMap = createClass({
 		$e.map.unbind('mouseenter');
 		$e.map.unbind('mouseleave');
 		var slot = this.getSlotData(e.target);
-		this.tileSet.clearSlots();
+		// this.tileSet.clearSlots();
 		this.tileSet.setTile(slot.row, slot.col, this.tileSet.getActiveTile());
 		// this.tileSet.extend();
 		// this.checkBounds();
@@ -223,10 +234,9 @@ var TileMap = createClass({
 		}
 
 		var map = {
-			w: Math.max(this.areaMap.W, this.map.left + this.areaMap.TILE * (this.tileSet.getCols() + 2)),
-			h: Math.max(this.areaMap.H, this.map.top + this.areaMap.TILE * (this.tileSet.getRows() + 2))
+			w: Math.max(this.areaMap.W, this.map.left + this.areaMap.TILE * (this.tileSet.getCols() + 1)),
+			h: Math.max(this.areaMap.H, this.map.top + this.areaMap.TILE * (this.tileSet.getRows() + 1))
 		}
-		console.log(map);
 		var $e = this.$context();
 		if (cssPx($e.map, 'width') < map.w) {
 			cssPx($e.map, 'width', map.w);

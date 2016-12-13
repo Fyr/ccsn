@@ -5,7 +5,7 @@ html, body { cursor: url('../img/cursor/normal.png'), auto; }
 #tiles { position: fixed; overflow: hidden; top: 600px; }
 .choose-tile {display: block; float: left; margin-right: 5px; border: 2px solid #fff;}
 .choose-tile.active { border: 2px solid blue; }
-#map { background: url('../img/tiles/bkg.png'); border: 1px solid blue; position: relative; top: 0px; left: 0px; width: 768px; height: 443px;}
+#map { background: url('../img/tiles/bkg.png'); position: relative; top: 0px; left: 0px; width: 768px; height: 443px;}
 #map #cursor {display: none; z-index: 1; }
 #map #subcursor {display: none; z-index: 1; width: auto !important; height: auto !important;}
 .nav { border: 1px solid red; position: fixed; top: 75px; left: 75px; width: 25px; height: 25px; }
@@ -20,3 +20,4 @@ html, body { cursor: url('../img/cursor/normal.png'), auto; }
 .rotate1 { transform: rotate(90deg); }
 .rotate2 { transform: rotate(180deg); }
 .rotate3 { transform: rotate(270deg); }
+.miple {display: block; border: 0px none; position: absolute; top: 0; left: 0; width: 12px;}
