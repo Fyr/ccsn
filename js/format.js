@@ -2,7 +2,8 @@ Format = {
 	tag: function(tagName, attrs, innerHtml) {
 		var html = '<' + tagName;
 		for(var i in attrs) {
-			html+= ' ' + i + '="' + attrs[i] + '"';
+			var _attrVal = (i == 'style' && typeof(attrs[i]) == 'object') ? Format.style(attrs[i]) : attrs[i];
+			html+= ' ' + i + '="' + _attrVal + '"';
 		}
 		if (innerHtml) {
 			html+= '>' + innerHtml + '</' + tagName + '>';

@@ -1,10 +1,10 @@
 var TileMap = createClass({
-	construct: function (eMap, areaMap, tileSet) {
+	construct: function (eMap, areaMap, tileSet, mipleSet) {
 		this.isLasso = false;
 		this.tileSet = tileSet;
 		this.areaMap = areaMap;
 		this.map = {e: eMap, left: 0, top: 0};
-
+		this.mipleSet = mipleSet;
 		this.init();
 	},
 
@@ -31,16 +31,6 @@ var TileMap = createClass({
 		// $(this.map.e).append(Format.img({src: '/img/cursor/mouse.png', id: 'subcursor', class: 'tile'}));
 	},
 
-	addMiple: function () {
-		var $e = this.$context();
-		// $e.map.append(Format.img({src: '/img/miple/red/knight.png', class: 'miple', style: 'left: 270px; top: 170px; '}));
-
-		$e.map.append(Format.img({src: '/img/miple/red/knight2.png', class: 'miple', style: 'left: 270px; top: 170px; '}));
-		// $e.map.append(Format.img({src: '/img/miple/red/robber2.png', class: 'miple', style: 'left: 250px; top: 185px; '}));
-		$e.map.append(Format.img({src: '/img/miple/miple-slot.png', class: 'miple', style: 'left: 290px; top: 185px; width: auto;'}));
-
-	},
-
 	getCursorPos: function (e) {
 		var $e = this.$context();
 		return {x: e.pageX - this.areaMap.LEFT - cssPx($e.map, 'left'), y: e.pageY - this.areaMap.TOP - cssPx($e.map, 'top')};
@@ -52,18 +42,27 @@ var TileMap = createClass({
 		cssPx($e.cursor, 'left', pos.x);
 	},
 
+	getTilePos: function (row, col) {
+		return {left: this.map.left + col * this.areaMap.TILE, top: this.map.top + row * this.areaMap.TILE};
+	},
+
 	drawTile: function (tile, row, col) {
 		var img = this.getTileImage(tile);
-		var pos = {w: this.map.left + col * this.areaMap.TILE, h: this.map.top + row * this.areaMap.TILE};
+		var pos = this.getTilePos(row, col);
 		var $map = this.$context().map;
-		$map.append(Format.img({class: img.class, src: img.src, style: 'top: ' + pos.h + 'px; left: ' + pos.w + 'px'}));
+		$map.append(Format.img({class: img.class, src: img.src, style: 'top: ' + pos.top + 'px; left: ' + pos.left + 'px'}));
 		if (tile == 'slot') {
 			var lasso = Format.img({
 				class: 'lasso',
 				src: '/img/blank.gif',
 				'data-row': row,
 				'data-col': col,
-				style: 'top: ' + (pos.h - this.areaMap.LASSO) + 'px; left: ' + (pos.w - this.areaMap.LASSO) + 'px; width: ' + this.areaMap.LASSO * 2 + 'px; height: ' + this.areaMap.LASSO * 2 + 'px; z-index: 5'
+				style: {
+					top: (pos.top - this.areaMap.LASSO) + 'px',
+					left: (pos.left - this.areaMap.LASSO) + 'px',
+					width: (this.areaMap.LASSO * 2) + 'px',
+					height: (this.areaMap.LASSO * 2) + 'px',
+				}
 			});
 			$map.append(lasso);
 		}
@@ -127,7 +126,7 @@ var TileMap = createClass({
 		this.checkBounds(slot);
 		this.drawMap();
 		this.addCursor();
-		this.addMiple();
+		// this.addMiple();
 		this.initEvents();
 	},
 
@@ -135,11 +134,11 @@ var TileMap = createClass({
 		var self = this;
 		var $map = this.$context().map;
 		$map.mouseenter(function(e){
-			console.log('mouseenter');
+			// console.log('mouseenter');
 			self.mouseenter(e);
 		});
 		$map.mouseleave(function(e){
-			console.log('mouseleave');
+			// console.log('mouseleave');
 			self.mouseleave(e);
 		});
 	},
@@ -204,19 +203,24 @@ var TileMap = createClass({
 	},
 	
 	click: function (e) {
+		var self = this;
+
 		this.isLasso = false;
 		var $e = this.$context(), pos = this.getCursorPos(e);
 		this.mouseleave();
 		$e.map.unbind('mouseenter');
 		$e.map.unbind('mouseleave');
 		var slot = this.getSlotData(e.target);
-		// this.tileSet.clearSlots();
-		this.tileSet.setTile(slot.row, slot.col, this.tileSet.getActiveTile());
-		// this.tileSet.extend();
-		// this.checkBounds();
-		// this.clearMap();
-		this.show(slot);
+		var tile = this.tileSet.getActiveTile();
+		this.tileSet.setTile(slot.row, slot.col, tile);
+		this.drawTile(tile, slot.row, slot.col);
 		this.setCursorPos(pos);
+		this.mouseleave();
+
+		var tilePos = this.getTilePos(slot.row, slot.col);
+		var tileData = this.tileSet.getTileData(tile);
+		this.mipleSet.init(this.$context().map, this.areaMap, tilePos, tileData, function (mipleSlot) { self.mipleSetCallback(slot, mipleSlot); });
+		this.mipleSet.show(e);
 	},
 
 	checkBounds: function (slot) {
@@ -244,5 +248,9 @@ var TileMap = createClass({
 		if (cssPx($e.map, 'height') < map.h) {
 			cssPx($e.map, 'height', map.h);
 		}
+	},
+
+	mipleSetCallback: function (slot, mipleSlot) {
+		console.log(this.tileSet.getActiveTile(), slot, mipleSlot);
 	}
 });

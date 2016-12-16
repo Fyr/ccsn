@@ -14,7 +14,7 @@
 	<script type="text/javascript" src="./js/tile-data.js"></script>
 	<script type="text/javascript" src="./js/tile-set.js"></script>
 	<script type="text/javascript" src="./js/tile-map.js"></script>
-
+	<script type="text/javascript" src="./js/miple-set.js"></script>
 <script>
 function getImgName(tile) {
 	if (tile == 'slot') {
@@ -36,7 +36,7 @@ $(function(){
 		['t1-r24', 'r34']
 	];
 	var ts = new TileSet(map, 'r34', new TileData(TILES));
-	tm = new TileMap('#map', AreaMap, ts);
+	tm = new TileMap('#map', AreaMap, ts, new MipleSet());
 	tm.show();
 
 	for(var tile in TILES) {

@@ -45,6 +45,11 @@ var TileSet = createClass({
         return this.getTiles()[i][j];
     },
 
+    getTileData: function (tile) {
+        var tile = this.split(tile);
+        return this.tileData.getData(tile.tile, tile.dir);
+    },
+
     split: function (tile) {
         var tile = tile.split('|');
         return {tile: tile[0], dir: (tile.length > 1) ? tile[1] : 0};
@@ -134,26 +139,26 @@ var TileSet = createClass({
 
     getTileSide: function (tile, side) {
         var td = this.split(tile);
-        return this.tileData.getSide(this.tileData.getData(td.tile, td.dir), side);
+        return this.tileData.getSide(this.tileData.getData(td.tile, td.dir), side).toLowerCase();
     },
 
     checkSlot: function (i, j) {
         // tile [i,j]  должен быть slot!!!
         var tile, tileOK = true;
         if (tileOK && ((i - 1) >= 0) && (tile = this.getTile(i - 1, j)) && tile !== 'slot') { // проверяем возможный стык сверху
-            // console.log('top', this.getActiveTile(), i - 1, j, tile);
+            console.log('top', this.getActiveTile(), i - 1, j, tile, this.getTileSide(this.getActiveTile(), 0), this.getTileSide(tile, 2));
             tileOK = this.getTileSide(this.getActiveTile(), 0) === this.getTileSide(tile, 2);
         }
         if (tileOK && ((i + 1) < this.getRows()) && (tile = this.getTile(i + 1, j)) && tile !== 'slot') { // проверяем возможный стык снизу
-            // console.log('bottom', this.getActiveTile(), i + 1, j, tile);
+            console.log('bottom', this.getActiveTile(), i + 1, j, tile, this.getTileSide(this.getActiveTile(), 2), this.getTileSide(tile, 0));
             tileOK = this.getTileSide(this.getActiveTile(), 2) === this.getTileSide(tile, 0);
         }
         if (tileOK && ((j - 1) >= 0) && (tile = this.getTile(i, j - 1)) && tile !== 'slot') { // проверяем возможный стык слева
-            // console.log('left', this.getActiveTile(), i, j - 1, tile);
+            console.log('left', this.getActiveTile(), i, j - 1, tile);
             tileOK = this.getTileSide(this.getActiveTile(), 3) === this.getTileSide(tile, 1);
         }
         if (tileOK && ((j + 1) < this.getCols()) && (tile = this.getTile(i, j + 1)) && tile !== 'slot') { // проверяем возможный стык справа
-            // console.log('right', this.getActiveTile(), i, j + 1, tile);
+            console.log('right', this.getActiveTile(), i, j + 1, tile, this.getTileSide(this.getActiveTile(), 1), this.getTileSide(tile, 3));
             tileOK = this.getTileSide(this.getActiveTile(), 1) === this.getTileSide(tile, 3);
         }
         return tileOK;
