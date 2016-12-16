@@ -9,7 +9,7 @@ var MipleSet = createClass({
 		this.$map = $map;
 		this.callback = callback;
 
-		this.isLasso = false;
+		this.isMagnet = false;
 	},
 
 	getSlotId: function (row, col) {
@@ -38,7 +38,7 @@ var MipleSet = createClass({
 
 		var $map = this.$context().map;
 		$map.append(Format.img({src: '/img/miple/miple-slot.png', class: 'miple miple-slot', style: style, id: this.getSlotId(i, j)}));
-		$map.append(Format.img({src: '/img/blank.gif', class: 'miple lasso', style: style, 'data-row': i, 'data-col': j}));
+		$map.append(Format.img({src: '/img/blank.gif', class: 'miple magnet', style: style, 'data-row': i, 'data-col': j}));
 		$map.append(Format.img({src: '/img/miple/red/knight2.png', class: 'miple hidden', style: style, id: this.getMipleId(i, j)}));
 	},
 
@@ -68,7 +68,7 @@ var MipleSet = createClass({
 	},
 
 	$context: function () {
-		return {map: this.$map, cursor: $('#miple-cursor', this.$map), lasso: $('.miple.lasso', this.$map), slots: $('.miple-slot')};
+		return {map: this.$map, cursor: $('#miple-cursor', this.$map), magnet: $('.miple.magnet', this.$map), slots: $('.miple-slot')};
 	},
 
 	show: function (e) {
@@ -78,12 +78,12 @@ var MipleSet = createClass({
 		this.mouseenter(e);
 	},
 
-	getSlotData: function(lasso) {
-		var row = $(lasso).data('row'), col = $(lasso).data('col');
+	getSlotData: function(magnet) {
+		var row = $(magnet).data('row'), col = $(magnet).data('col');
 		return {
 			id: this.getSlotId(row, col),
-			left: parseInt(cssPx(lasso, 'left')),
-			top: parseInt(cssPx(lasso, 'top')),
+			left: parseInt(cssPx(magnet, 'left')),
+			top: parseInt(cssPx(magnet, 'top')),
 			row: row,
 			col: col
 		};
@@ -106,11 +106,11 @@ var MipleSet = createClass({
 		$e.map.css('cursor', 'none');
 		self.setCursorPos(self.getCursorPos(e));
 		$e.cursor.show();
-		self.isLasso = false;
+		self.isMagnet = false;
 		$e.map.bind('mousemove', function(e){
 			e.stopPropagation();
 			$e.cursor.show();
-			if (!self.isLasso) {
+			if (!self.isMagnet) {
 				self.setCursorPos(self.getCursorPos(e));
 			}
 		});
@@ -119,22 +119,22 @@ var MipleSet = createClass({
 			self.rotateTile(e);
 			return false;
 		});
-		$e.lasso.bind('mouseenter', function(e){
-			console.log('lasso.mouseenter');
+		$e.magnet.bind('mouseenter', function(e){
+			console.log('magnet.mouseenter');
 			e.stopPropagation();
-			self.isLasso = true;
+			self.isMagnet = true;
 			var slot = self.getSlotData(e.target);
 			cssPx($e.cursor, 'top', slot.top);
 			cssPx($e.cursor, 'left', slot.left);
 			$('#' + self.getSlotId(slot.row, slot.col)).hide();
 		});
-		$e.lasso.bind('mouseleave', function(e){
-			console.log('lasso.mouseleave');
+		$e.magnet.bind('mouseleave', function(e){
+			console.log('magnet.mouseleave');
 			e.stopPropagation();
-			self.isLasso = false;
+			self.isMagnet = false;
 			self.$context().slots.show();
 		});
-		$e.lasso.bind('click', function(e){
+		$e.magnet.bind('click', function(e){
 			e.stopPropagation();
 			console.log('click');
 			self.click(e);
@@ -146,9 +146,9 @@ var MipleSet = createClass({
 		$e.cursor.hide();
 		$e.map.unbind('mousemove');
 		$e.map.unbind('contextmenu');
-		$e.lasso.unbind('mouseenter');
-		$e.lasso.unbind('mouseleave');
-		$e.lasso.unbind('click');
+		$e.magnet.unbind('mouseenter');
+		$e.magnet.unbind('mouseleave');
+		$e.magnet.unbind('click');
 	},
 
 	click: function (e) {

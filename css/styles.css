@@ -1,7 +1,7 @@
 html, body { cursor: url('../img/cursor/normal.png'), auto; }
 .hidden, .miple.hidden { display: none; }
 .tile { display: block; border: 0px none; width: 44px; height: 44px; position: absolute; top: 0; left: 0;}
-.lasso { display: block; border: 0px none; position: absolute; top: 0; left: 0; z-index: 5}
+.magnet { display: block; border: 0px none; position: absolute; top: 0; left: 0; z-index: 5}
 #area { border: 1px solid red; position: fixed; overflow: hidden; }
 #tiles { position: fixed; overflow: hidden; top: 600px; }
 .choose-tile {display: block; float: left; margin-right: 5px; border: 2px solid #fff;}

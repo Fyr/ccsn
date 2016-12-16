@@ -1,10 +1,11 @@
 var TileMap = createClass({
 	construct: function (eMap, areaMap, tileSet, mipleSet) {
-		this.isLasso = false;
-		this.tileSet = tileSet;
-		this.areaMap = areaMap;
 		this.map = {e: eMap, left: 0, top: 0};
+		this.areaMap = areaMap;
+		this.tileSet = tileSet;
 		this.mipleSet = mipleSet;
+
+		this.isMagnet = false;
 		this.init();
 	},
 
@@ -52,19 +53,19 @@ var TileMap = createClass({
 		var $map = this.$context().map;
 		$map.append(Format.img({class: img.class, src: img.src, style: 'top: ' + pos.top + 'px; left: ' + pos.left + 'px'}));
 		if (tile == 'slot') {
-			var lasso = Format.img({
-				class: 'lasso',
+			var magnet = Format.img({
+				class: 'magnet',
 				src: '/img/blank.gif',
 				'data-row': row,
 				'data-col': col,
 				style: {
-					top: (pos.top - this.areaMap.LASSO) + 'px',
-					left: (pos.left - this.areaMap.LASSO) + 'px',
-					width: (this.areaMap.LASSO * 2) + 'px',
-					height: (this.areaMap.LASSO * 2) + 'px',
+					top: (pos.top - this.areaMap.MAGNET) + 'px',
+					left: (pos.left - this.areaMap.MAGNET) + 'px',
+					width: (this.areaMap.MAGNET * 2) + 'px',
+					height: (this.areaMap.MAGNET * 2) + 'px',
 				}
 			});
-			$map.append(lasso);
+			$map.append(magnet);
 		}
 	},
 
@@ -101,21 +102,21 @@ var TileMap = createClass({
 
 		/*
 		 $('#map .tile').remove();
-		 $('#map .lasso').remove();
+		 $('#map .magnet').remove();
 		 */
 	},
 
-	getSlotData: function(lasso) {
+	getSlotData: function(magnet) {
 		return {
-			left: parseInt(cssPx(lasso, 'left') + this.areaMap.LASSO),
-			top: parseInt(cssPx(lasso, 'top') + this.areaMap.LASSO),
-			row: $(lasso).data('row'),
-			col: $(lasso).data('col')
+			left: parseInt(cssPx(magnet, 'left') + this.areaMap.MAGNET),
+			top: parseInt(cssPx(magnet, 'top') + this.areaMap.MAGNET),
+			row: $(magnet).data('row'),
+			col: $(magnet).data('col')
 		};
 	},
 
 	$context: function() {
-		return {map: $(this.map.e), cursor: $('#cursor', this.map.e), lasso: $('.lasso', this.map.e), subcursor: $('#subcursor', this.map.e)};
+		return {map: $(this.map.e), cursor: $('#cursor', this.map.e), magnet: $('.magnet', this.map.e), subcursor: $('#subcursor', this.map.e)};
 	},
 
 	show: function(slot) {
@@ -150,11 +151,11 @@ var TileMap = createClass({
 		self.setCursorPos(self.getCursorPos(e));
 		$e.cursor.attr('src', this.getTileImage(this.tileSet.getActiveTile()).src);
 		$e.cursor.show();
-		self.isLasso = false;
+		self.isMagnet = false;
 		$e.map.bind('mousemove', function(e){
 			e.stopPropagation();
 			$e.cursor.show();
-			if (!self.isLasso) {
+			if (!self.isMagnet) {
 				self.setCursorPos(self.getCursorPos(e));
 			}
 		});
@@ -163,18 +164,18 @@ var TileMap = createClass({
 			self.rotateTile(e);
 			return false;
 		});
-		$e.lasso.bind('mouseenter', function(e){
+		$e.magnet.bind('mouseenter', function(e){
 			e.stopPropagation();
-			self.isLasso = true;
+			self.isMagnet = true;
 			var slot = self.getSlotData(e.target);
 			cssPx($e.cursor, 'top', slot.top);
 			cssPx($e.cursor, 'left', slot.left);
 		});
-		$e.lasso.bind('mouseleave', function(e){
+		$e.magnet.bind('mouseleave', function(e){
 			e.stopPropagation();
-			self.isLasso = false;
+			self.isMagnet = false;
 		});
-		$e.lasso.bind('click', function(e){
+		$e.magnet.bind('click', function(e){
 			e.stopPropagation();
 			self.click(e);
 		});
@@ -185,13 +186,13 @@ var TileMap = createClass({
 		$e.cursor.hide();
 		$e.map.unbind('mousemove');
 		$e.map.unbind('contextmenu');
-		$e.lasso.unbind('mouseenter');
-		$e.lasso.unbind('mouseleave');
-		$e.lasso.unbind('click');
+		$e.magnet.unbind('mouseenter');
+		$e.magnet.unbind('mouseleave');
+		$e.magnet.unbind('click');
 	},
 
 	rotateTile: function (e) {
-		this.isLasso = false;
+		this.isMagnet = false;
 		var $e = this.$context(), pos = this.getCursorPos(e);
 		this.mouseleave();
 		$e.map.unbind('mouseenter');
@@ -205,7 +206,7 @@ var TileMap = createClass({
 	click: function (e) {
 		var self = this;
 
-		this.isLasso = false;
+		this.isMagnet = false;
 		var $e = this.$context(), pos = this.getCursorPos(e);
 		this.mouseleave();
 		$e.map.unbind('mouseenter');
