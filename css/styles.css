@@ -2,22 +2,46 @@ html, body { cursor: url('../img/cursor/normal.png'), auto; }
 .hidden, .miple.hidden { display: none; }
 .tile { display: block; border: 0px none; width: 44px; height: 44px; position: absolute; top: 0; left: 0;}
 .magnet { display: block; border: 0px none; position: absolute; top: 0; left: 0; z-index: 5}
-#area { border: 1px solid red; position: fixed; overflow: hidden; }
-#tiles { position: fixed; overflow: hidden; top: 600px; }
+#area { position: fixed; overflow: hidden; }
+#tiles { position: fixed; overflow: hidden; top: 460px; }
 .choose-tile {display: block; float: left; margin-right: 5px; border: 2px solid #fff;}
 .choose-tile.active { border: 2px solid blue; }
 #map { background: url('../img/tiles/bkg.png'); position: relative; top: 0px; left: 0px; width: 818px; height: 493px;}
 #map #cursor {display: none; z-index: 1; }
 #map #subcursor {display: none; z-index: 1; width: auto !important; height: auto !important;}
-.nav { border: 1px solid red; position: fixed; top: 0px; left: 0px; }
-.nav-up { cursor: url('../img/cursor/up.png'), n-resize; }
-.nav-up-right { cursor: url('../img/cursor/up-right.png'), ne-resize; }
-.nav-right { cursor: url('../img/cursor/right.png'), e-resize; }
-.nav-down-right { cursor: url('../img/cursor/down-right.png'), se-resize; }
-.nav-down { cursor: url('../img/cursor/down.png'), s-resize; }
-.nav-down-left { cursor: url('../img/cursor/down-left.png'), sw-resize; }
-.nav-left { cursor: url('../img/cursor/left.png'), w-resize; }
-.nav-up-left { cursor: url('../img/cursor/up-left.png'), nw-resize; }
+.nav { position: fixed; top: 0px; left: 0px; }
+.nav-up {
+    background: url('../img/brd-tb.png') repeat-x;
+    cursor: url('../img/cursor/up.png'), n-resize;
+}
+.nav-up-right {
+    background: url('../img/brd-lu.png') no-repeat;
+    cursor: url('../img/cursor/up-right.png'), ne-resize;
+}
+.nav-right {
+    background: url('../img/brd-lr.png') repeat-y;
+    cursor: url('../img/cursor/right.png'), e-resize;
+}
+.nav-down-right {
+    background: url('../img/brd-rb.png') no-repeat;
+    cursor: url('../img/cursor/down-right.png'), se-resize;
+}
+.nav-down {
+    background: url('../img/brd-tb.png') repeat-x;
+    cursor: url('../img/cursor/down.png'), s-resize;
+}
+.nav-down-left {
+    background: url('../img/brd-rb.png') no-repeat;
+    cursor: url('../img/cursor/down-left.png'), sw-resize;
+}
+.nav-left {
+    background: url('../img/brd-lr.png') repeat-y;
+    cursor: url('../img/cursor/left.png'), w-resize;
+}
+.nav-up-left {
+    background: url('../img/brd-lu.png') no-repeat;
+    cursor: url('../img/cursor/up-left.png'), nw-resize;
+}
 .rotate1 { transform: rotate(90deg); }
 .rotate2 { transform: rotate(180deg); }
 .rotate3 { transform: rotate(270deg); }
