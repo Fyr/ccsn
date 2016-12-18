@@ -146,19 +146,19 @@ var TileSet = createClass({
         // tile [i,j]  должен быть slot!!!
         var tile, tileOK = true;
         if (tileOK && ((i - 1) >= 0) && (tile = this.getTile(i - 1, j)) && tile !== 'slot') { // проверяем возможный стык сверху
-            console.log('top', this.getActiveTile(), i - 1, j, tile, this.getTileSide(this.getActiveTile(), 0), this.getTileSide(tile, 2));
+            // console.log('top', this.getActiveTile(), i - 1, j, tile, this.getTileSide(this.getActiveTile(), 0), this.getTileSide(tile, 2));
             tileOK = this.getTileSide(this.getActiveTile(), 0) === this.getTileSide(tile, 2);
         }
         if (tileOK && ((i + 1) < this.getRows()) && (tile = this.getTile(i + 1, j)) && tile !== 'slot') { // проверяем возможный стык снизу
-            console.log('bottom', this.getActiveTile(), i + 1, j, tile, this.getTileSide(this.getActiveTile(), 2), this.getTileSide(tile, 0));
+            // console.log('bottom', this.getActiveTile(), i + 1, j, tile, this.getTileSide(this.getActiveTile(), 2), this.getTileSide(tile, 0));
             tileOK = this.getTileSide(this.getActiveTile(), 2) === this.getTileSide(tile, 0);
         }
         if (tileOK && ((j - 1) >= 0) && (tile = this.getTile(i, j - 1)) && tile !== 'slot') { // проверяем возможный стык слева
-            console.log('left', this.getActiveTile(), i, j - 1, tile);
+            // console.log('left', this.getActiveTile(), i, j - 1, tile);
             tileOK = this.getTileSide(this.getActiveTile(), 3) === this.getTileSide(tile, 1);
         }
         if (tileOK && ((j + 1) < this.getCols()) && (tile = this.getTile(i, j + 1)) && tile !== 'slot') { // проверяем возможный стык справа
-            console.log('right', this.getActiveTile(), i, j + 1, tile, this.getTileSide(this.getActiveTile(), 1), this.getTileSide(tile, 3));
+            // console.log('right', this.getActiveTile(), i, j + 1, tile, this.getTileSide(this.getActiveTile(), 1), this.getTileSide(tile, 3));
             tileOK = this.getTileSide(this.getActiveTile(), 1) === this.getTileSide(tile, 3);
         }
         return tileOK;

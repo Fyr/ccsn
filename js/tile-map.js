@@ -215,13 +215,18 @@ var TileMap = createClass({
 		var tile = this.tileSet.getActiveTile();
 		this.tileSet.setTile(slot.row, slot.col, tile);
 		this.drawTile(tile, slot.row, slot.col);
+		/* просто показать след.ход
+		this.show(slot);
 		this.setCursorPos(pos);
+		*/
 		this.mouseleave();
+		// this.show(slot);
 
 		var tilePos = this.getTilePos(slot.row, slot.col);
 		var tileData = this.tileSet.getTileData(tile);
 		this.mipleSet.init(this.$context().map, this.areaMap, tilePos, tileData, function (mipleSlot) { self.mipleSetCallback(slot, mipleSlot); });
 		this.mipleSet.show(e);
+
 	},
 
 	checkBounds: function (slot) {

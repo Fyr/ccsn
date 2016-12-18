@@ -4,9 +4,10 @@
 <meta charset="utf-8">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<link href="./css/styles.css" rel="stylesheet" type="text/css" />
-
 	<script type="text/javascript" src="./js/vendor/jquery.1.11.0.min.js"></script>
 	<script type="text/javascript" src="./js/vendor/class.js"></script>
+	<script type="text/javascript" src="./js/util.js"></script>
+	<script type="text/javascript" src="./js/nav.js"></script>
 	<script type="text/javascript" src="./js/json_x.js"></script>
 	<script type="text/javascript" src="./js/format.js"></script>
 	<script type="text/javascript" src="./js/area-map.js"></script>
@@ -23,10 +24,7 @@ function getImgName(tile) {
 	return '/img/tiles/tile-' + tile + '.png';
 }
 
-var MAP = {W: 600, H: 400, TOP: 100, LEFT: 100, NAV: 25, SCROLL: 2, DELAY: 10, TILE: 46, Z_TOP: 0, Z_LEFT: 0, LASSO: 10};
 var timer = null, ts;
-var currTile = 'r34';
-
 $(function(){
 	initMap();
 	initNav();
@@ -35,8 +33,16 @@ $(function(){
 	var map = [
 		['t1-r24', 'r34']
 	];
+	var am = {
+		LEFT: AreaMap.LEFT + AreaMap.NAV,
+		TOP: AreaMap.TOP + AreaMap.NAV,
+		W: AreaMap.W - AreaMap.NAV * 2,
+		H: AreaMap.H - AreaMap.NAV * 2,
+		TILE: AreaMap.TILE,
+		MAGNET: AreaMap.MAGNET
+	}
 	var ts = new TileSet(map, 'r34', new TileData(TILES));
-	tm = new TileMap('#map', AreaMap, ts, new MipleSet());
+	tm = new TileMap('#map', am, ts, new MipleSet());
 	tm.show();
 
 	for(var tile in TILES) {
@@ -67,7 +73,7 @@ $(function(){
 <div class="nav nav-down-left"></div>
 <div class="nav nav-down-right"></div>
 
-<div id="area"><div id="map"></div></div>
+<div id="area"><div id="map" onselect="return false;"></div></div>
 
 <div id="tiles"></div>
 </body>

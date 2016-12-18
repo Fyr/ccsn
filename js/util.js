@@ -37,3 +37,12 @@ function extend(self, fnObj) {
 		}
 	}
 }
+
+function cssPx(e, prop, val) {
+	// console.log(e, prop, val);
+	var px = parseInt($(e).css(prop).replace(/px/, ''));
+	if (typeof(val) != 'undefined') {
+		$(e).css(prop, val + 'px');
+	}
+	return px;
+}

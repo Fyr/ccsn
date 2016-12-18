@@ -1,7 +1,11 @@
-// var MAP = {W: 600, H: 400, TOP: 100, LEFT: 100, NAV: 25, SCROLL: 2, DELAY: 10, TILE: 46, Z_TOP: 0, Z_LEFT: 0, LASSO: 10};
+/*
+AreaMap - размеры и положение рабочей области, В НЕЕ ВХОДИТ NAV
+Для #map размеры должны быть уменьшены на AreaMap.NAV
+В идеале LEFT = TOP = 0 (верхний левый угол окна), W, H = размеры окна
+*/
 var AreaMap = createClass({
 	static: {
-		W: 600, H: 400, TOP: 100, LEFT: 100, NAV: 25, SCROLL: 2, DELAY: 10, TILE: 44, MAGNET: 10, MIPLE: 12
+		W: 600, H: 400, TOP: 50, LEFT: 50, NAV: 25, SCROLL: 2, DELAY: 10, TILE: 44, MAGNET: 10, MIPLE: 12
 	}
 });
 /*
