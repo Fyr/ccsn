@@ -1,5 +1,5 @@
 QUnit.test("TileData tests", function (assert) {
-	var td = new TileData(TILES);
+	var td = new TileData(Tiles);
 	expected = [
 		['z','t','t','t','t','t','z'],
 		['t','t','t','T','t','t','t'],

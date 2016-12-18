@@ -12,9 +12,11 @@
 	<script type="text/javascript" src="./js/format.js"></script>
 	<script type="text/javascript" src="./js/area-map.js"></script>
 	<script type="text/javascript" src="./js/nav.js"></script>
+	<script type="text/javascript" src="./js/tiles.js"></script>
 	<script type="text/javascript" src="./js/tile-data.js"></script>
 	<script type="text/javascript" src="./js/tile-set.js"></script>
 	<script type="text/javascript" src="./js/tile-map.js"></script>
+	<script type="text/javascript" src="./js/tile-theme.js"></script>
 	<script type="text/javascript" src="./js/miple-set.js"></script>
 <script>
 function getImgName(tile) {
@@ -41,11 +43,11 @@ $(function(){
 		TILE: AreaMap.TILE,
 		MAGNET: AreaMap.MAGNET
 	}
-	var ts = new TileSet(map, 'r34', new TileData(TILES));
-	tm = new TileMap('#map', am, ts, new MipleSet());
+	var ts = new TileSet(map, 'r34', new TileData(Tiles));
+	tm = new TileMap('#map', am, ts, new MipleSet(), new TileTheme());
 	tm.show();
 
-	for(var tile in TILES) {
+	for(var tile in Tiles) {
 		var img = Format.tag('img', {class: 'choose-tile', src: getImgName(tile), alt: '', 'data-name': tile});
 		$('#tiles').append(img);
 	}

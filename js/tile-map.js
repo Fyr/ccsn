@@ -1,9 +1,10 @@
 var TileMap = createClass({
-	construct: function (eMap, areaMap, tileSet, mipleSet) {
+	construct: function (eMap, areaMap, tileSet, mipleSet, theme) {
 		this.map = {e: eMap, left: 0, top: 0};
 		this.areaMap = areaMap;
 		this.tileSet = tileSet;
 		this.mipleSet = mipleSet;
+		this.theme = theme;
 
 		this.isMagnet = false;
 		this.init();
@@ -69,6 +70,7 @@ var TileMap = createClass({
 		}
 	},
 
+	/*
 	getImgSrc: function (tile) {
 		return '/img/tiles/tile-' + tile + '.png';
 	},
@@ -77,9 +79,11 @@ var TileMap = createClass({
 	getImgClass: function (dir) {
 		return (dir > 0) ? 'tile rotate' + dir : 'tile';
 	},
+	*/
 
 	getTileImage: function (tile) {
 		var e = tile.split('|');
+		return this.getTheme().getTile(e[0], e.length > 1 ? e[1] : 0);
 		return {src: this.getImgSrc(e[0]), class: this.getImgClass(e.length > 1 ? e[1] : 0)};
 	},
 
@@ -222,9 +226,11 @@ var TileMap = createClass({
 		this.mouseleave();
 		// this.show(slot);
 
+		// по идее MipleSet нужен только здесь и можно делать this.mipleSet = new MipleSet();
+		// но через конструктор сделано ради Dependency Injection и явного создания класса там, где подключается скрипт
 		var tilePos = this.getTilePos(slot.row, slot.col);
 		var tileData = this.tileSet.getTileData(tile);
-		this.mipleSet.init(this.$context().map, this.areaMap, tilePos, tileData, function (mipleSlot) { self.mipleSetCallback(slot, mipleSlot); });
+		this.mipleSet.init(this.$context().map, this.areaMap, tilePos, tileData, this.getTheme(), function (mipleSlot) { self.mipleSetCallback(slot, mipleSlot); });
 		this.mipleSet.show(e);
 
 	},
@@ -258,5 +264,9 @@ var TileMap = createClass({
 
 	mipleSetCallback: function (slot, mipleSlot) {
 		console.log(this.tileSet.getActiveTile(), slot, mipleSlot);
+	},
+
+	getTheme: function () {
+		return this.theme;
 	}
 });

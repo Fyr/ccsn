@@ -1,5 +1,5 @@
 QUnit.test("TileSet tests", function (assert) {
-	var ts = new TileSet(null, null, new TileData(TILES));
+	var ts = new TileSet(null, null, new TileData(Tiles));
 	data = [
 		['r34',  '',       'r13'],
 		['r23',  't1-r24', 'r34'],

@@ -2,11 +2,12 @@ var MipleSet = createClass({
 	construct: function () {
 	},
 
-	init: function ($map, areaMap, tilePos, tileData, callback) {
+	init: function ($map, areaMap, tilePos, tileData, theme, callback) {
 		this.areaMap = areaMap;
 		this.tilePos = tilePos;
 		this.tileData = tileData;
 		this.$map = $map;
+		this.theme = theme;
 		this.callback = callback;
 
 		this.isMagnet = false;
@@ -20,6 +21,10 @@ var MipleSet = createClass({
 		return 'miple-' + row + '_' + col;
 	},
 
+	getTheme: function () {
+		return this.theme;
+	},
+
 	getSlotPos: function (i, j) {
 		// вычисляем позицию мипла/слота по матрице тайла
 		var stepX = this.areaMap.TILE / this.tileData.length, stepY = this.areaMap.TILE / this.tileData[0].length;
@@ -31,13 +36,13 @@ var MipleSet = createClass({
 
 	drawSlot: function (i, j, type) {
 		var pos = this.getSlotPos(i, j);
-		var style = {
+		var $map = this.$context().map;
+		var slot = this.getTheme().getMiple('slot');
+		style = {
 			left: pos.left + 'px',
 			top: pos.top + 'px'
 		};
-
-		var $map = this.$context().map;
-		$map.append(Format.img({src: '/img/miple/miple-slot.png', class: 'miple-slot', style: style, id: this.getSlotId(i, j)}));
+		$map.append(Format.img({id: this.getSlotId(i, j), src: slot.src, class: slot.class, style: style}));
 
 		var style = { // смещение на центр курсора-мипла
 			left: (pos.left - 3) + 'px',
@@ -45,8 +50,8 @@ var MipleSet = createClass({
 		};
 		$map.append(Format.img({src: '/img/blank.gif', class: 'miple-magnet', style: style, 'data-row': i, 'data-col': j}));
 
-		var miple_src = (type == 'G') ? '/img/miple/red/peasant2.png' : '/img/miple/red/knight2.png';
-		$map.append(Format.img({src: miple_src, class: 'miple hidden', style: style, id: this.getMipleId(i, j)}));
+		var miple = this.getTheme().getMiple(type, 'red');
+		$map.append(Format.img({id: this.getMipleId(i, j), src: miple.src, class: miple.class + ' hidden', style: style}));
 	},
 
 	draw: function () {
@@ -60,7 +65,8 @@ var MipleSet = createClass({
 	},
 
 	addCursor: function () {
-		this.$context().map.append(Format.img({src: '/img/miple/red/knight2.png', id: 'miple-cursor'}));
+		var cursor = this.getTheme().getMiple('cursor');
+		this.$context().map.append(Format.img({id: 'miple-cursor', src: cursor.src, class: cursor.class}));
 	} ,
 
 	setCursorPos: function (pos) {
@@ -75,7 +81,15 @@ var MipleSet = createClass({
 	},
 
 	$context: function () {
-		return {map: this.$map, cursor: $('#miple-cursor', this.$map), magnet: $('.miple-magnet', this.$map), slots: $('.miple-slot', this.$map), miples: $('.miple', this.$map)};
+		var slot = this.getTheme().getMiple('slot');
+		var miple = this.getTheme().getMiple('*');
+		return {
+			map: this.$map,
+			cursor: $('#miple-cursor', this.$map),
+			magnet: $('.miple-magnet', this.$map),
+			slots: $('.' + slot.class, this.$map),
+			miples: $('.' + miple.class, this.$map)
+		};
 	},
 
 	show: function (e) {
