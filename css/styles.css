@@ -51,7 +51,7 @@ html, body { cursor: url('../img/cursor/normal.png'), auto; }
 #miple-cursor { display: block; border: 0px none; position: absolute; top: 0; left: 0; z-index: 1;}
 
 /* main colors */
-.red { background: #db0d0d; }
-.blue { background: #279fed; }
-.green { background: #028857; }
-.yellow { background: #dbaf00; }
+.red, .crimson { background: #db0d0d; }
+.blue, .cyan { background: #279fed; }
+.green, .jade { background: #028857; }
+.yellow, .bronze { background: #dbaf00; }
