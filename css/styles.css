@@ -49,3 +49,9 @@ html, body { cursor: url('../img/cursor/normal.png'), auto; }
 .miple-slot, .miple-magnet { display: block; border: 0px none; position: absolute; top: 0; left: 0; width: 10px; }
 .miple-magnet { z-index: 5; }
 #miple-cursor { display: block; border: 0px none; position: absolute; top: 0; left: 0; z-index: 1;}
+
+/* main colors */
+.red { background: #db0d0d; }
+.blue { background: #279fed; }
+.green { background: #028857; }
+.yellow { background: #dbaf00; }

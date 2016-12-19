@@ -21,7 +21,7 @@ var TileTheme = createClass({
 		} else if (type == '*') { // любой мипл
 			return {class: 'miple'};
 		}
-		var miple_src = (type == 'G') ? 'peasant2.png' : 'knight2.png';
+		var miple_src = (type == 'G') ? 'peasant.png' : 'knight.png';
 		return {src: '/img/miple/' + color + '/' + miple_src, class: 'miple'}
 	}
 });
