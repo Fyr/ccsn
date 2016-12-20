@@ -2,14 +2,10 @@ var MipleSet = createClass({
 	construct: function () {
 	},
 
-	init: function ($map, areaMap, tilePos, tileData, theme, player, callback) {
+	init: function ($map, areaMap, theme) {
 		this.areaMap = areaMap;
-		this.tilePos = tilePos;
-		this.tileData = tileData;
 		this.$map = $map;
 		this.theme = theme;
-		this.player = player;
-		this.callback = callback;
 
 		this.isMagnet = false;
 	},
@@ -32,6 +28,30 @@ var MipleSet = createClass({
 
 	setPlayer: function (player) {
 		this.player = player;
+	},
+
+	getTilePos: function () {
+		return this.tilePos;
+	},
+
+	setTilePos: function (tilePos) {
+		this.tilePos = tilePos;
+	},
+
+	getTileData: function () {
+		return this.tileData;
+	},
+
+	setTileData: function (tileData) {
+		this.tileData = tileData;
+	},
+
+	getCallback: function () {
+		return this.callback;
+	},
+
+	setCallback: function (callback) {
+		this.callback = callback;
 	},
 
 	getSlotPos: function (i, j) {

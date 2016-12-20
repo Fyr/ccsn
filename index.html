@@ -44,7 +44,7 @@ $(function(){
 		MAGNET: AreaMap.MAGNET
 	}
 	var ts = new TileSet(map, 'r34', new TileData(Tiles));
-	tm = new TileMap('#map', am, ts, new MipleSet(), new TileTheme());
+	tm = new TileMap('#map', am, ts, new MipleSet(), new TileTheme(), 'red');
 	tm.show();
 
 	for(var tile in Tiles) {

@@ -1,10 +1,11 @@
 var TileMap = createClass({
-	construct: function (eMap, areaMap, tileSet, mipleSet, theme) {
+	construct: function (eMap, areaMap, tileSet, mipleSet, theme, player) {
 		this.map = {e: eMap, left: 0, top: 0};
 		this.areaMap = areaMap;
 		this.tileSet = tileSet;
 		this.mipleSet = mipleSet;
 		this.theme = theme;
+		this.player = player;
 
 		this.isMagnet = false;
 		this.init();
@@ -17,6 +18,8 @@ var TileMap = createClass({
 		// this.checkBounds();
 		this.map.left = Math.round((this.areaMap.W - this.areaMap.TILE * this.tileSet.getCols()) / 2);
 		this.map.top = Math.round((this.areaMap.H - this.areaMap.TILE * this.tileSet.getRows()) / 2);
+
+		this.mipleSet.init(this.$context().map, this.areaMap, this.getTheme());
 	},
 
 	addCursor: function(pos) {
@@ -56,7 +59,9 @@ var TileMap = createClass({
 			var tilePos = this.getTilePos(row, col);
 			var tileData = this.tileSet.getTileData(tile);
 			var miple = tileInfo.miple;
-			this.mipleSet.init(this.$context().map, this.areaMap, tilePos, tileData, this.getTheme(), tileInfo.player);
+			this.mipleSet.setTilePos(tilePos);
+			this.mipleSet.setTileData(tileData);
+			this.mipleSet.setPlayer(tileInfo.player);
 			this.mipleSet.drawMiple(miple.row, miple.col, tileData[miple.row][miple.col]);
 		}
 	},
@@ -219,11 +224,10 @@ var TileMap = createClass({
 		this.mouseleave();
 		// this.show(slot);
 
-		// по идее MipleSet нужен только здесь и можно делать this.mipleSet = new MipleSet();
-		// но через конструктор сделано ради Dependency Injection и явного создания класса там, где подключается скрипт
-		var tilePos = this.getTilePos(slot.row, slot.col);
-		var tileData = this.tileSet.getTileData(tile);
-		this.mipleSet.init(this.$context().map, this.areaMap, tilePos, tileData, this.getTheme(), 'red', function (mipleSlot) { self.mipleSetCallback(slot, mipleSlot); });
+		this.mipleSet.setTilePos(this.getTilePos(slot.row, slot.col));
+		this.mipleSet.setTileData(this.tileSet.getTileData(tile));
+		this.mipleSet.setPlayer(this.player);
+		this.mipleSet.setCallback(function (mipleSlot) { self.mipleSetCallback(slot, mipleSlot); });
 		this.mipleSet.show(e);
 
 	},
