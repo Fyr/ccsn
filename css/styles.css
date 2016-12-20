@@ -46,8 +46,8 @@ html, body { cursor: url('../img/cursor/normal.png'), auto; }
 .rotate1 { transform: rotate(90deg); }
 .rotate2 { transform: rotate(180deg); }
 .rotate3 { transform: rotate(270deg); }
-.miple {display: block; border: 0px none; position: absolute; top: 0; left: 0; }
-.miple-slot, .miple-magnet { display: block; border: 0px none; position: absolute; top: 0; left: 0; width: 10px; }
+.miple {display: block; border: 0px none; position: absolute; top: 0; left: 0; z-index: 2;}
+.miple-slot, .miple-magnet { display: block; border: 0px none; position: absolute; top: 0; left: 0; width: 10px; z-index: 1; }
 .miple-magnet { z-index: 5; }
 #miple-cursor { display: block; border: 0px none; position: absolute; top: 0; left: 0; z-index: 1;}
 

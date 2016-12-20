@@ -14,10 +14,6 @@ var TileMap = createClass({
 		var $e = this.$context();
 
 		this.tileSet.extend();
-		/*
-		cssPx($e.map, 'width', this.areaMap.W + 200); // пока сделал специально больше чем area - test на скроллинг карты внутри Area
-		cssPx($e.map, 'height', this.areaMap.H + 100);
-		*/
 		// this.checkBounds();
 		this.map.left = Math.round((this.areaMap.W - this.areaMap.TILE * this.tileSet.getCols()) / 2);
 		this.map.top = Math.round((this.areaMap.H - this.areaMap.TILE * this.tileSet.getRows()) / 2);
@@ -48,6 +44,23 @@ var TileMap = createClass({
 		return {left: this.map.left + col * this.areaMap.TILE, top: this.map.top + row * this.areaMap.TILE};
 	},
 
+	getTileImage: function (tile) {
+		var e = this.tileSet.tileSplit(tile);
+		return this.getTheme().getTile(e.tile, e.dir);
+	},
+
+	drawMiple: function (tile, row, col) {
+		var tileInfo = this.tileSet.tileSplit(tile);
+		console.log(tileInfo);
+		if (tileInfo.miple) {
+			var tilePos = this.getTilePos(row, col);
+			var tileData = this.tileSet.getTileData(tile);
+			var miple = tileInfo.miple;
+			this.mipleSet.init(this.$context().map, this.areaMap, tilePos, tileData, this.getTheme(), tileInfo.player);
+			this.mipleSet.drawMiple(miple.row, miple.col, tileData[miple.row][miple.col]);
+		}
+	},
+
 	drawTile: function (tile, row, col) {
 		var img = this.getTileImage(tile);
 		var pos = this.getTilePos(row, col);
@@ -67,24 +80,9 @@ var TileMap = createClass({
 				}
 			});
 			$map.append(magnet);
+		} else {
+			this.drawMiple(tile, row, col);
 		}
-	},
-
-	/*
-	getImgSrc: function (tile) {
-		return '/img/tiles/tile-' + tile + '.png';
-	},
-
-	// dir = 0..3;
-	getImgClass: function (dir) {
-		return (dir > 0) ? 'tile rotate' + dir : 'tile';
-	},
-	*/
-
-	getTileImage: function (tile) {
-		var e = tile.split('|');
-		return this.getTheme().getTile(e[0], e.length > 1 ? e[1] : 0);
-		return {src: this.getImgSrc(e[0]), class: this.getImgClass(e.length > 1 ? e[1] : 0)};
 	},
 
 	drawMap: function () {
@@ -103,11 +101,6 @@ var TileMap = createClass({
 		$map.unbind('mouseenter');
 		$map.unbind('mouseleave');
 		$map.html('');
-
-		/*
-		 $('#map .tile').remove();
-		 $('#map .magnet').remove();
-		 */
 	},
 
 	getSlotData: function(magnet) {
@@ -217,7 +210,7 @@ var TileMap = createClass({
 		$e.map.unbind('mouseleave');
 		var slot = this.getSlotData(e.target);
 		var tile = this.tileSet.getActiveTile();
-		this.tileSet.setTile(slot.row, slot.col, tile);
+		// this.tileSet.setTile(slot.row, slot.col, tile);
 		this.drawTile(tile, slot.row, slot.col);
 		/* просто показать след.ход
 		this.show(slot);
@@ -230,7 +223,7 @@ var TileMap = createClass({
 		// но через конструктор сделано ради Dependency Injection и явного создания класса там, где подключается скрипт
 		var tilePos = this.getTilePos(slot.row, slot.col);
 		var tileData = this.tileSet.getTileData(tile);
-		this.mipleSet.init(this.$context().map, this.areaMap, tilePos, tileData, this.getTheme(), function (mipleSlot) { self.mipleSetCallback(slot, mipleSlot); });
+		this.mipleSet.init(this.$context().map, this.areaMap, tilePos, tileData, this.getTheme(), 'red', function (mipleSlot) { self.mipleSetCallback(slot, mipleSlot); });
 		this.mipleSet.show(e);
 
 	},
@@ -264,6 +257,7 @@ var TileMap = createClass({
 
 	mipleSetCallback: function (slot, mipleSlot) {
 		console.log(this.tileSet.getActiveTile(), slot, mipleSlot);
+		this.tileSet.setTile(slot.row, slot.col, this.tileSet.getActiveTile());
 		this.$context().map.css('cursor', 'normal');
 		this.$context().map.addClass('wait');
 	},

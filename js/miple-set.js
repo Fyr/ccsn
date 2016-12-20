@@ -2,12 +2,13 @@ var MipleSet = createClass({
 	construct: function () {
 	},
 
-	init: function ($map, areaMap, tilePos, tileData, theme, callback) {
+	init: function ($map, areaMap, tilePos, tileData, theme, player, callback) {
 		this.areaMap = areaMap;
 		this.tilePos = tilePos;
 		this.tileData = tileData;
 		this.$map = $map;
 		this.theme = theme;
+		this.player = player;
 		this.callback = callback;
 
 		this.isMagnet = false;
@@ -25,33 +26,50 @@ var MipleSet = createClass({
 		return this.theme;
 	},
 
+	getPlayer: function () {
+		return this.player;
+	},
+
+	setPlayer: function (player) {
+		this.player = player;
+	},
+
 	getSlotPos: function (i, j) {
 		// вычисляем позицию мипла/слота по матрице тайла
 		var stepX = this.areaMap.TILE / this.tileData.length, stepY = this.areaMap.TILE / this.tileData[0].length;
 		return {
-			left: parseInt(this.tilePos.left + j * stepX - stepX / 2),
-			top: parseInt(this.tilePos.top + i * stepY - stepY / 2)
+			left: parseInt(this.tilePos.left + j * stepX - stepX / 2) + 'px',
+			top: parseInt(this.tilePos.top + i * stepY - stepY / 2) + 'px'
 		};
 	},
 
-	drawSlot: function (i, j, type) {
+	getMiplePos: function (i, j, type) {
 		var pos = this.getSlotPos(i, j);
-		var $map = this.$context().map;
-		var slot = this.getTheme().getMiple('slot');
-		style = {
+		pos.left = parseInt(pos.left.replace(/px/, '')) - 3;
+		pos.top = parseInt(pos.top.replace(/px/, '')) - 3;
+		return { // смещение на центр курсора-мипла
 			left: pos.left + 'px',
 			top: pos.top + 'px'
 		};
+	},
+
+	drawMiple: function (i, j, type, x_class) {
+		var miple = this.getTheme().getMiple(type, this.getPlayer());
+		var _class = miple.class + (x_class ? ' ' + x_class : '');
+		var style = this.getMiplePos(i, j, type);
+		this.$context().map.append(Format.img({id: this.getMipleId(i, j), src: miple.src, class: _class, style: style}));
+	},
+
+	drawSlot: function (i, j, type) {
+		var $map = this.$context().map;
+		var style = this.getSlotPos(i, j);
+		var slot = this.getTheme().getMiple('slot');
 		$map.append(Format.img({id: this.getSlotId(i, j), src: slot.src, class: slot.class, style: style}));
 
-		var style = { // смещение на центр курсора-мипла
-			left: (pos.left - 3) + 'px',
-			top: (pos.top - 3) + 'px'
-		};
+		style = this.getMiplePos(i, j, type);
 		$map.append(Format.img({src: '/img/blank.gif', class: 'miple-magnet', style: style, 'data-row': i, 'data-col': j}));
 
-		var miple = this.getTheme().getMiple(type, 'red');
-		$map.append(Format.img({id: this.getMipleId(i, j), src: miple.src, class: miple.class + ' hidden', style: style}));
+		this.drawMiple(i, j, type, 'hidden');
 	},
 
 	draw: function () {
@@ -65,8 +83,10 @@ var MipleSet = createClass({
 	},
 
 	addCursor: function () {
-		var cursor = this.getTheme().getMiple('cursor');
-		this.$context().map.append(Format.img({id: 'miple-cursor', src: cursor.src, class: cursor.class}));
+		if (!this.$context().cursor.length) {
+			var cursor = this.getTheme().getMiple('cursor');
+			this.$context().map.append(Format.img({id: 'miple-cursor', src: cursor.src, class: cursor.class}));
+		}
 	} ,
 
 	setCursorPos: function (pos) {
@@ -141,7 +161,7 @@ var MipleSet = createClass({
 			return false;
 		});
 		$e.magnet.bind('mouseenter', function(e){
-			console.log('magnet.mouseenter');
+			// console.log('magnet.mouseenter');
 			e.stopPropagation();
 			self.isMagnet = true;
 			var $e = self.$context();
@@ -155,7 +175,7 @@ var MipleSet = createClass({
 			$e.cursor.hide();
 		});
 		$e.magnet.bind('mouseleave', function(e){
-			console.log('magnet.mouseleave');
+			// console.log('magnet.mouseleave');
 			e.stopPropagation();
 			self.isMagnet = false;
 			$e.cursor.show();
