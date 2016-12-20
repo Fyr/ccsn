@@ -1,3 +1,7 @@
+/*
+    TileSet выполняет логические операции над набором тайлов и кодирует их расположение:
+    tile|dir|player|miple-slot
+ */
 var TileSet = createClass({
     construct: function (tiles, activeTile, tileData) {
         this.tiles = [];
@@ -46,17 +50,36 @@ var TileSet = createClass({
     },
 
     getTileData: function (tile) {
-        var tile = this.split(tile);
+        var tile = this.tileSplit(tile);
         return this.tileData.getData(tile.tile, tile.dir);
     },
 
-    split: function (tile) {
+    tileSplit: function (tile) {
+        // тайл кодируется как строка
         var tile = tile.split('|');
-        return {tile: tile[0], dir: (tile.length > 1) ? tile[1] : 0};
+        var miple = (tile.length > 3) ? tile[3].split(',') : [];
+        return {
+            tile: tile[0],
+            dir: (tile.length > 1) ? tile[1] : 0,
+            player: (tile.length > 3) ? tile[2] : '',
+            miple: (miple.length) ? {row: miple[0], col: miple[1]} : null
+        };
+    },
+
+    tileJoin: function (tileInfo) {
+        var a = [tileInfo.tile];
+        if (tileInfo.dir) {
+            a.push(tileInfo.dir);
+        }
+        if (tileInfo.player && tileInfo.miple) {
+            a.push(tileInfo.player);
+            a.push(tileInfo.miple.row + ',' + tileInfo.miple.col);
+        }
+        return a.join('|');
     },
 
     rotate: function (i, j) {
-        var td = this.split(this.getActiveTile());
+        var td = this.tileSplit(this.getActiveTile());
         td.dir++;
         if (td.dir > 3) {
             td.dir = 0;
@@ -138,7 +161,7 @@ var TileSet = createClass({
     },
 
     getTileSide: function (tile, side) {
-        var td = this.split(tile);
+        var td = this.tileSplit(tile);
         return this.tileData.getSide(this.tileData.getData(td.tile, td.dir), side).toLowerCase();
     },
 

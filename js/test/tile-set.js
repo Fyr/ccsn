@@ -16,7 +16,6 @@ QUnit.test("TileSet tests", function (assert) {
 	];
 	assert.deepEqual(ts.getTiles(), expected, 'Extend all');
 
-
 	data = [
 		['',     '',       '',     ''],
 		['',     't1-r24', 'r34',  ''],
@@ -102,5 +101,12 @@ QUnit.test("TileSet tests", function (assert) {
 	];
 	assert.deepEqual(ts.getTiles(), expected, 'Create active slot - rotated town+crossroad match town and road');
 
+	data = {tile: 't1-r23', dir: 2, player: 'red', miple: {row: 3, col: 0}};
+	expected = 't1-r23|2|red|3,0';
+	console.log(ts.tileJoin(data));
+	assert.equal(ts.tileJoin(data), expected, 'Join tile info');
+
+	expected = {"tile": "t1-r23", "dir": "2", "player": "red", "miple": {"row": "3", "col": "0"}};
+	assert.propEqual(ts.tileSplit('t1-r23|2|red|3,0'), expected, 'Split tile info');
 
 });
