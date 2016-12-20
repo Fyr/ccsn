@@ -68,7 +68,7 @@ var TileSet = createClass({
 
     tileJoin: function (tileInfo) {
         var a = [tileInfo.tile];
-        if (tileInfo.dir) {
+        if (tileInfo.dir || tileInfo.miple) {
             a.push(tileInfo.dir);
         }
         if (tileInfo.player && tileInfo.miple) {

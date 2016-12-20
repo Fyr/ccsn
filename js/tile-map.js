@@ -54,7 +54,6 @@ var TileMap = createClass({
 
 	drawMiple: function (tile, row, col) {
 		var tileInfo = this.tileSet.tileSplit(tile);
-		console.log(tileInfo);
 		if (tileInfo.miple) {
 			var tilePos = this.getTilePos(row, col);
 			var tileData = this.tileSet.getTileData(tile);
@@ -260,8 +259,15 @@ var TileMap = createClass({
 	},
 
 	mipleSetCallback: function (slot, mipleSlot) {
-		console.log(this.tileSet.getActiveTile(), slot, mipleSlot);
-		this.tileSet.setTile(slot.row, slot.col, this.tileSet.getActiveTile());
+		// console.log(this.tileSet.getActiveTile(), slot, mipleSlot);
+		var tile = this.tileSet.tileSplit(this.tileSet.getActiveTile());
+		tile = this.tileSet.tileJoin({
+			tile: tile.tile,
+			dir: tile.dir,
+			player: this.player,
+			miple: mipleSlot
+		});
+		this.tileSet.setTile(slot.row, slot.col, tile);
 		this.$context().map.css('cursor', 'normal');
 		this.$context().map.addClass('wait');
 	},

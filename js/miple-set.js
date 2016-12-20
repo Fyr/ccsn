@@ -89,7 +89,7 @@ var MipleSet = createClass({
 		style = this.getMiplePos(i, j, type);
 		$map.append(Format.img({src: '/img/blank.gif', class: 'miple-magnet', style: style, 'data-row': i, 'data-col': j}));
 
-		this.drawMiple(i, j, type, 'hidden');
+		this.drawMiple(i, j, type, 'active-miple hidden');
 	},
 
 	draw: function () {
@@ -122,13 +122,12 @@ var MipleSet = createClass({
 
 	$context: function () {
 		var slot = this.getTheme().getMiple('slot');
-		var miple = this.getTheme().getMiple('*');
 		return {
 			map: this.$map,
 			cursor: $('#miple-cursor', this.$map),
 			magnet: $('.miple-magnet', this.$map),
 			slots: $('.' + slot.class, this.$map),
-			miples: $('.' + miple.class, this.$map)
+			// miples: $('.active-miple', this.$map)
 		};
 	},
 
@@ -186,12 +185,8 @@ var MipleSet = createClass({
 			self.isMagnet = true;
 			var $e = self.$context();
 			var slot = self.getSlotData(e.target);
-			/*
-			cssPx($e.cursor, 'top', slot.top);
-			cssPx($e.cursor, 'left', slot.left);
-			*/
 			$('#' + self.getSlotId(slot.row, slot.col)).hide();
-			$('#' + self.getMipleId(slot.row, slot.col)).show();
+			$('#' + self.getMipleId(slot.row, slot.col) + '.active-miple').show();
 			$e.cursor.hide();
 		});
 		$e.magnet.bind('mouseleave', function(e){
@@ -199,8 +194,9 @@ var MipleSet = createClass({
 			e.stopPropagation();
 			self.isMagnet = false;
 			$e.cursor.show();
-			self.$context().miples.hide();
-			self.$context().slots.show();
+			var slot = self.getSlotData(e.target);
+			$('#' + self.getSlotId(slot.row, slot.col)).show();
+			$('#' + self.getMipleId(slot.row, slot.col) + '.active-miple').hide();
 		});
 		$e.magnet.bind('click', function(e){
 			e.stopPropagation();

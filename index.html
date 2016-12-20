@@ -26,7 +26,7 @@ function getImgName(tile) {
 	return '/img/tiles/tile-' + tile + '.png';
 }
 
-var timer = null, ts;
+var timer = null, ts, tm;
 $(function(){
 	initMap();
 	initNav();
@@ -43,7 +43,7 @@ $(function(){
 		TILE: AreaMap.TILE,
 		MAGNET: AreaMap.MAGNET
 	}
-	var ts = new TileSet(map, 'r34', new TileData(Tiles));
+	ts = new TileSet(map, 'r34', new TileData(Tiles));
 	tm = new TileMap('#map', am, ts, new MipleSet(), new TileTheme(), 'red');
 	tm.show();
 
