@@ -17,7 +17,7 @@ var TileTheme = createClass({
 		if (type == 'slot') {
 			return {src: '/img/miple/miple-slot.png', class: 'miple-slot'};
 		} else if (type == 'cursor') {
-			return {src: '/img/miple/red/knight2.png', class: ''};
+			return {src: '/img/miple/red/knight.png', class: ''};
 		} else if (type == '*') { // любой мипл
 			return {class: 'miple'};
 		}

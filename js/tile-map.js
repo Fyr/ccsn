@@ -264,6 +264,8 @@ var TileMap = createClass({
 
 	mipleSetCallback: function (slot, mipleSlot) {
 		console.log(this.tileSet.getActiveTile(), slot, mipleSlot);
+		this.$context().map.css('cursor', 'normal');
+		this.$context().map.addClass('wait');
 	},
 
 	getTheme: function () {
