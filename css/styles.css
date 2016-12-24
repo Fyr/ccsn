@@ -49,7 +49,7 @@ html, body { cursor: url('../img/cursor/normal.png'), auto; }
 .miple {display: block; border: 0px none; position: absolute; top: 0; left: 0; z-index: 2;}
 .miple-slot, .miple-magnet { display: block; border: 0px none; position: absolute; top: 0; left: 0; width: 10px; z-index: 1; }
 .miple-magnet { z-index: 5; }
-#miple-cursor { display: block; border: 0px none; position: absolute; top: 0; left: 0; z-index: 1;}
+#miple-cursor { display: block; border: 0px none; position: absolute; top: 0; left: 0; z-index: 5;}
 
 /* main colors */
 .red, .crimson { background: #db0d0d; }

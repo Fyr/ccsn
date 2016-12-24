@@ -65,7 +65,7 @@ var MipleSet = createClass({
 
 	getMiplePos: function (i, j, type) {
 		var pos = this.getSlotPos(i, j);
-		pos.left = parseInt(pos.left.replace(/px/, '')) - 3;
+		pos.left = parseInt(pos.left.replace(/px/, '')) + ((type == 'G') ? -5 : -3);
 		pos.top = parseInt(pos.top.replace(/px/, '')) - 3;
 		return { // смещение на центр курсора-мипла
 			left: pos.left + 'px',
@@ -86,7 +86,7 @@ var MipleSet = createClass({
 		var slot = this.getTheme().getMiple('slot');
 		$map.append(Format.img({id: this.getSlotId(i, j), src: slot.src, class: slot.class, style: style}));
 
-		style = this.getMiplePos(i, j, type);
+		style = this.getSlotPos(i, j, type);
 		$map.append(Format.img({src: '/img/blank.gif', class: 'miple-magnet', style: style, 'data-row': i, 'data-col': j}));
 
 		this.drawMiple(i, j, type, 'active-miple hidden');

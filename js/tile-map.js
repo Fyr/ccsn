@@ -69,8 +69,9 @@ var TileMap = createClass({
 		var img = this.getTileImage(tile);
 		var pos = this.getTilePos(row, col);
 		var $map = this.$context().map;
-		$map.append(Format.img({class: img.class, src: img.src, style: 'top: ' + pos.top + 'px; left: ' + pos.left + 'px'}));
+		var x_class = '';
 		if (tile == 'slot') {
+			x_class = ' tile-slot';
 			var magnet = Format.img({
 				class: 'magnet',
 				src: '/img/blank.gif',
@@ -87,6 +88,7 @@ var TileMap = createClass({
 		} else {
 			this.drawMiple(tile, row, col);
 		}
+		$map.append(Format.img({class: img.class + x_class, src: img.src, style: 'top: ' + pos.top + 'px; left: ' + pos.left + 'px'}));
 	},
 
 	drawMap: function () {
@@ -107,6 +109,11 @@ var TileMap = createClass({
 		$map.html('');
 	},
 
+	clearSlots: function () {
+		this.tileSet.clearSlots();
+		this.$context().slots.remove();
+	},
+
 	getSlotData: function(magnet) {
 		return {
 			left: parseInt(cssPx(magnet, 'left') + this.areaMap.MAGNET),
@@ -117,7 +124,7 @@ var TileMap = createClass({
 	},
 
 	$context: function() {
-		return {map: $(this.map.e), cursor: $('#cursor', this.map.e), magnet: $('.magnet', this.map.e), subcursor: $('#subcursor', this.map.e)};
+		return {map: $(this.map.e), cursor: $('#cursor', this.map.e), magnet: $('.magnet', this.map.e), slots: $('.tile-slot', this.map.e)};
 	},
 
 	show: function(slot) {
@@ -228,7 +235,6 @@ var TileMap = createClass({
 		this.mipleSet.setPlayer(this.player);
 		this.mipleSet.setCallback(function (mipleSlot) { self.mipleSetCallback(slot, mipleSlot); });
 		this.mipleSet.show(e);
-
 	},
 
 	checkBounds: function (slot) {
@@ -260,6 +266,7 @@ var TileMap = createClass({
 
 	mipleSetCallback: function (slot, mipleSlot) {
 		// console.log(this.tileSet.getActiveTile(), slot, mipleSlot);
+		this.clearSlots();
 		var tile = this.tileSet.tileSplit(this.tileSet.getActiveTile());
 		tile = this.tileSet.tileJoin({
 			tile: tile.tile,
