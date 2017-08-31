@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<script type="text/javascript" src="./js/vendor/class.js"></script>
+	<script type="text/javascript" src="./js/format.js"></script>
+	<script type="text/javascript" src="./js/json_x.js"></script>
+	<script type="text/javascript" src="./js/array_x.js"></script>
+	<script type="text/javascript" src="./js/wave.js"></script>
+
+	<script type="text/javascript" src="./js/vendor/jquery.1.11.0.min.js"></script>
+<style>
+td {
+	border: 1px solid #ddd;
+	width: 20px;
+	height: 20px;
+	text-align: center;
+	vertical-align: middle;
+}
+.no-move {
+	background: #ccc;
+}
+.start { color: #0f0; }
+.finish { color: #f00; }
+/*
+div {
+	border: 1px solid blue;
+}
+*/
+</style>
+<script>
+var matrix = [
+	['r', 'g', 'g'],
+	['r', 'g', 'r'],
+	['g', 'g', 'g']
+];
+/*
+function genMatrix(mx, mask) {
+	var sx = [];
+	for (var i = 0; i < mx.length; i++) {
+		sx.push([]);
+		for(var j = 0; j < mx[i].length; j++) {
+			sx[i].push((mx[i][j] == mask) ? 1 : 0);
+		}
+	}
+	return sx;
+}
+*/
+
+function genMatrix(aRows, aCols, noMove) {
+	var i, j, mx = [];
+	for(i = 0; i < aRows; i++) {
+		mx[i] = [];
+		for(j = 0; j < aCols; j++) {
+			mx[i].push(1); // клетка не занята
+		}
+	}
+
+	for(i = 0; i < noMove; i++) {
+		mx[rndInt(0, aRows - 1)][rndInt(0, aCols - 1)] = 0;
+	}
+	return mx;
+}
+
+function drawMatrix(e, mx, lShow) {
+	lShow = (isset(lShow)) ? lShow : false;
+	var html = '<table cellpadding="0" cellspacing="0">';
+	for (var i = 0; i < mx.length; i++) {
+		html+= '<tr>';
+		for(var j = 0; j < mx[i].length; j++) {
+			html+= Format.tag('td', {class: mx[i][j] ? '' : 'no-move'}, mx[i][j]);
+		}
+		html+= '</tr>';
+	}
+	html+= '</table>';
+	$(e).append(html);
+}
+
+function rndInt(min, max) {
+	var rand = min + Math.random() * (max + 1 - min);
+	rand = Math.floor(rand);
+	return rand;
+}
+
+$(function(){
+	var aCols = 10, aRows = 10, noMove = aCols + aRows;
+	var sx = genMatrix(aRows, aCols, noMove);
+	var si, sj; // start point
+    var fi, fj; // finish point
+    // generate start & end point
+	do {
+		si = rndInt(0, aRows - 1);
+		sj = rndInt(0, aCols - 1);
+        fi = rndInt(0, aRows - 1);
+        fj = rndInt(0, aCols - 1);
+	} while (!sx[si][sj] && !sx[fi][fj] && si != fi && sj != fj);
+
+	var ws = new Wave4Dir(sx);
+	var wx = ws.getWaveMx(si, sj, function(i, j) {
+        return i == fi && j == fj;
+    });
+	sx[si][sj] = '<b class="start">S</b>';
+	wx[si][sj] = '<b class="start">S</b>';
+    sx[fi][fj] = '<b class="finish">F</b>';
+    wx[fi][fj] = '<b class="finish">F</b>';
+	drawMatrix('#mask', sx, true);
+	drawMatrix('#wave', wx, true);
+
+	var rows = [];
+    sx[si][sj] = '<b class="start">1</b>';
+    sx[fi][fj] = '<b class="finish">1</b>';
+	for(i = 0; i < sx.getRows(); i++) {
+		rows.push('\t[' + sx[i].join() + ']');
+	}
+	$('pre').html('var sx = [\n' + rows.join(',\n') + '\n];\nvar si = ' + si + ', sj = ' + sj + ';\ncount = ' + ws.count);
+});
+</script>
+</head>
+<body>
+	<div id="mask"></div>
+	<div id="wave" style="margin-top: 20px;"></div>
+	<pre>
+
+	</pre>
+    <div id="log" style="font-size: 9px;"></div>
+</body>
+</html>

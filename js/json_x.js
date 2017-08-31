@@ -8,22 +8,23 @@ JSON.get = function(data, key) {
 }
 
 JSON.getBy = function(data, key, value) {
-    return JSON.iterate(data, function(e){
+    var i = JSON.iterate(data, function(e){
         return (e.key == value);
     });
+    return (isset(i)) ? data[i] : null;
 }
 
 JSON.iterate = function(data, fn) {
     if (typeof(data) == 'object') {
         for(var i in data) {
-            if (fn(data[i], data)) {
-                return data[i];
+            if (fn(data[i], i, data)) {
+                return i;
             }
         }
     } else {
         for(var i = 0; i < data.length; i++) {
-            if (fn(data[i], data)) {
-                return data[i];
+            if (fn(data[i], i, data)) {
+                return i;
             }
         }
     }

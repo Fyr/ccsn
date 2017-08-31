@@ -53,4 +53,5 @@ QUnit.test('/core/json_x.js tests', function( assert ) {
         {key: 1234, title: 'row2'}
     ];
     assert.deepEqual(JSON.sortBy(data, 'key'), expected, 'sortBy() sort by number');
+
 });
